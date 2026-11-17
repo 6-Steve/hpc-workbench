@@ -373,7 +373,7 @@ function DiagnosticsView({ onOpenSettings }: { onOpenSettings?: () => void }): J
 }
 
 /**
- * 轮询分级（docs/04 §5.1 P6 要求跳板机上的轮询必须分级）：
+ * 轮询分级（docs/04 §3.1 P6 要求跳板机上的轮询必须分级）：
  * 作业状态会变，20 秒一次；配额和点数几乎不动，而且配额实测要 550 ms，5 分钟一次足够。
  */
 const JOBS_POLL_MS = 20_000

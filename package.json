@@ -19,19 +19,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "probe": "tsx scripts/probe.ts",
-    "inspect": "tsx scripts/inspect.ts",
-    "tar-check": "tsx scripts/tar-check.ts",
-    "tar-down-check": "tsx scripts/tar-down-check.ts",
-    "sftp-check": "tsx scripts/sftp-check.ts",
-    "make-bench-dir": "tsx scripts/make-bench-dir.ts",
-    "latency-check": "tsx scripts/latency-check.ts",
-    "joblog-check": "tsx scripts/joblog-check.ts",
-    "tunnel-check": "tsx scripts/tunnel-check.ts",
-    "terminal-check": "tsx scripts/terminal-check.ts",
-    "reverse-check": "tsx scripts/reverse-check.ts",
-    "trace-check": "tsx scripts/trace-check.ts",
-    "boot-check": "tsx scripts/boot-check.ts",
-    "points-check": "tsx scripts/points-check.ts"
+    "inspect": "tsx scripts/inspect.ts"
   },
   "dependencies": {
     "@xterm/addon-fit": "^0.11.0",

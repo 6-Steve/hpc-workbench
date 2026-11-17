@@ -45,6 +45,3 @@ Thumbs.db
 
 # 界面偏好（关窗策略等），属于本机状态
 config/ui.json
-
-# 截图脚本的侧写诊断（每张 PNG 旁边会生成一个同名 .txt）
-docs/screenshots/*.txt

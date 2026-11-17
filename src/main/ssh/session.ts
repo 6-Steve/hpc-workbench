@@ -990,7 +990,7 @@ export class Session {
   /**
    * 开一个交互式 shell（PTY）。
    *
-   * **在登录节点上开**，不是计算节点：集群大多禁了计算节点的直连 SSH（docs/04 §5.1 P3），
+   * **在登录节点上开**，不是计算节点：集群大多禁了计算节点的直连 SSH（docs/04 §3.1 P3），
    * 而登录节点本来就允许交互登录，`module load` / `conda activate` / `salloc` 都在那儿用。
    *
    * 几个必须做对的地方：

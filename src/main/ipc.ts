@@ -1485,7 +1485,7 @@ export function registerIpcHandlers(deps: IpcDeps): void {
   /**
    * 开一个交互式终端（登录节点上的 PTY）。
    *
-   * 计算节点大多禁了直连 SSH（docs/04 §5.1 P3），所以终端开在登录节点上——
+   * 计算节点大多禁了直连 SSH（docs/04 §3.1 P3），所以终端开在登录节点上——
    * 这也正是 `module load` / `conda activate` / `salloc` 该用的地方。
    */
   ipcMain.handle(

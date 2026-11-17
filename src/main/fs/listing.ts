@@ -94,7 +94,7 @@ async function remoteRealpath(sftp: SFTPWrapper, path: string): Promise<string> 
  * 这样界面不需要提前知道 home 是多少（虽然能力探测里有，但两者可能不一致）。
  *
  * —— 为什么带缓存 ——
- * 实测（`npm run latency-check`）：链路往返 59 ms，`readdir` 82 项 32 ms、
+ * 实测：链路往返 59 ms，`readdir` 82 项 32 ms、
  * 429 项 210 ms。来回切目录时每一趟都要重付这份钱，而目录内容在几秒内
  * 几乎不会变。所以加一层很短的 TTL 缓存：返回上一级、重新进刚看过的目录
  * 都能秒开。
