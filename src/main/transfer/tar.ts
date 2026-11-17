@@ -1,5 +1,5 @@
 /**
- * tar 流式上传（单段版本，Phase 0 用来验证链路可行性）。
+ * tar 流式上传（单段版本，最初用来验证链路可行性）。
  *
  * 数据路径：本地读文件 → tar-stream 打包 → SSH channel → 远端 `tar -x`
  * 全程不落地，文件边界只是 512 字节头部，没有逐文件往返（docs/02 §2.1）。
@@ -9,7 +9,7 @@
  * 2. **远端退出码必须检查**——本地写完不代表远端解开成功，不查就是静默丢数据
  * 3. 先解到 `<dest>.partial/`，全部成功后再 `mv` 改名；改名在同文件系统内是原子的
  *
- * 分段（2 GB/段）与段级续传属于 Phase 1 的传输引擎，这里刻意不做。
+ * 分段（2 GB/段）与段级续传还没做，这里刻意不做。
  */
 import { createReadStream } from 'node:fs'
 import { readdir, stat } from 'node:fs/promises'

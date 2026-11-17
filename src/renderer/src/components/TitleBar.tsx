@@ -9,7 +9,7 @@
  * 作业 → 作业页、存储 → 资源页（配额在那）、点数 → 点数页。
  * 传 `onNavigate` 才可点；不传时退回纯展示，不留死按钮。
  *
- * 顺带把原来那个写死的「Phase 1」徽章去掉了：作品集里挂个阶段标签像半成品。
+ * 顺带把原来那个写死的阶段徽章去掉了：作品集里挂个阶段标签像半成品。
  */
 import type { Tab } from '../lib/dock-tabs'
 import { TITLE_CHIP_TARGETS } from '../lib/title-chips'

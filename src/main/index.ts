@@ -1,9 +1,9 @@
 /**
  * 应用入口：创建窗口、初始化服务、生命周期。
  *
- * Phase 0 的目标是"打通链路"，所以窗口只做到能自己用起来：
+ * 起步阶段的目标是"打通链路"，所以窗口只做到能自己用起来：
  * 一个无边框窗口 + 一个"连接探针"按钮，把主进程里真实的 SSH 探测结果打在界面上。
- * 界面骨架、Dock、任务栏属于 Phase 3，不在这里提前造。
+ * 界面骨架、Dock、任务栏是后来才加的，不在这里提前造。
  */
 import { BrowserWindow, Menu, Tray, app, ipcMain, nativeImage, shell } from 'electron'
 import { existsSync, mkdirSync, readFileSync } from 'node:fs'
