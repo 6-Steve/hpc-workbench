@@ -1,0 +1,35 @@
+{
+  "$comment": "把这个文件复制进配置目录、改名为 profiles.json，再改成你自己的主机信息。配置目录在哪儿？启动应用后，未配置时顶部有一条横幅，点「打开配置目录」就会直接跳过去（开发时是仓库根的 config/，装好的应用是 %APPDATA%/HPC Workbench/config）。",
+  "$credentials": "密码和私钥口令**不要写在这个文件里**。启动应用后到「设置 → 登录凭据」填，那里会用操作系统的钥匙串加密保存（Windows DPAPI / macOS Keychain），并且绑当前系统账户——文件被拷到别人的电脑上也解不开。这里留空的 auth.password / auth.passphrase 就会被凭据库自动补上。",
+  "version": 2,
+  "defaultProfile": "cluster",
+  "profiles": [
+    {
+      "id": "cluster",
+      "label": "实验室集群",
+      "host": "login.example.edu.cn",
+      "port": 22,
+      "username": "user01",
+      "auth": {
+        "method": "key",
+        "privateKeyPath": "~/.ssh/id_ed25519"
+      },
+      "maxConcurrent": 5,
+      "connectTimeoutMs": 15000,
+      "keepaliveIntervalMs": 10000,
+      "trustNewHostKey": true
+    },
+    {
+      "id": "jump",
+      "label": "跳板机（示例，如果你用密码登录就保留这条，不用可删）",
+      "host": "10.0.0.1",
+      "port": 22,
+      "username": "user01",
+      "auth": {
+        "method": "password"
+      },
+      "maxConcurrent": 3,
+      "trustNewHostKey": true
+    }
+  ]
+}

@@ -1,0 +1,391 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/**
+ * ============================================================
+ *  主题变量
+ * ============================================================
+ *
+ * 一切视觉值都在这三组变量里。`tailwind.config.js` 只负责把它们
+ * 映射成类名（`bg-surface` → `rgb(var(--c-surface) / 1)`），
+ * 所以**加一套主题 = 在这里加一组变量 + 在 `lib/theme.ts` 登记**，两处都对得上才算数。
+ *
+ * 变量值是 `R G B`（空格分隔，不是 hex）——这是 Tailwind 的
+ * `rgb(var(--x) / <alpha-value>)` 写法要求的，好处是 `bg-surface/70` 这种
+ * 透明度修饰符照常可用（标题栏和浮层的玻璃感全靠它）。
+ *
+ * ⚠️ 本文件里**不能**写 `theme('colors.xxx')`：变量色会被展开成
+ * `rgb(var(--c-x) / <alpha-value>)`，而 `<alpha-value>` 在普通 CSS 属性里
+ * 不会被替换 → 整条声明失效。要引用就写 `rgb(var(--c-x))`。
+ *
+ * ---
+ * ## 默认主题：`dunhuang`（敦煌）
+ *
+ * ### 五个锚色与它们的用途
+ *
+ * | 锚色 | 名称 | 用途 |
+ * |---|---|---|
+ * | `#4E3227` | 深棕（土） | 主文字、反色面（主按钮底） |
+ * | `#9A4C43` | 赭红（赭） | 主色、错误态、危险动作 |
+ * | `#03875C` | 翡翠（青） | 成功态、正向强调 |
+ * | `#AAAAC2` | 灰紫（黛） | 中性灰阶来源、次要文字、边框 |
+ * | `#ECD98B` | 沙金（金） | 画布底、高光、装饰、警示底色 |
+ *
+ * ### 为什么还有"派生色"
+ *
+ * 五个色填不满 30 多个 token 槽位，而且**其中两个做文字是不可读的**：
+ * `#ECD98B` 衬白只有 **1.41:1**，`#AAAAC2` 只有 **2.27:1**。
+ * 所以按**同一色相加/减明度**派生：派生色不引入新色相，
+ * 色相系统仍然只有这五个。
+ *
+ * 具体到两处必须加深的地方（都仍在原色相上）：
+ * - `state-ok` 用 `#037550`：锚色 `#03875C` 衬 tint 只有 4.21:1，差一点；
+ *   加深 15% 后 5.27:1。锚色本身保留给装饰槽位（`decor-mint`）和图表填充。
+ * - `state-wait` 用 `#8A6114`：沙金太亮，做文字必须压到暗金褐才够 5.12:1。
+ *
+ * ### 风格来源
+ *
+ * 敦煌壁画是**矿物颜料 + 土墙**：颜色饱和但不刺眼，表面是平的（几乎没有阴影），
+ * 边缘硬朗（小圆角），留白像壁画的边饰。所以这套主题：
+ * - 圆角最小（6/10），比经典和纸墨都更方
+ * - 阴影几乎取消，层次靠**底色差和描边**
+ * - 动效沉稳（150ms，无回弹）
+ * - 画布是暖沙金 `#F8F0DA`，卡片是纯白——像纸上贴的画
+ */
+:root {
+  /* —— 语义面 —— */
+  --c-canvas: 248 240 218;
+  --c-surface: 255 255 255;
+  --c-field: 251 246 233;
+  --c-inverse: 78 50 39;
+  --c-on-inverse: 255 255 255;
+  --c-scrim: 58 37 32;
+
+  /* —— 中性：深棕派生（暖褐灰，不是冷灰）—— */
+  --c-ink-50: 251 247 234;
+  --c-ink-100: 244 237 217;
+  --c-ink-200: 230 220 194;
+  --c-ink-300: 207 194 166;
+  /** 2.70:1 —— 只做边框/分隔/禁用，做文字读不清 */
+  --c-ink-400: 168 156 136;
+  /** 6.51:1 —— 文字色的最低档 */
+  --c-ink-500: 110 90 74;
+  --c-ink-600: 96 76 61;
+  --c-ink-700: 85 63 50;
+  --c-ink-800: 70 48 40;
+  /** 锚色 #4E3227 —— 正文（11.61:1） */
+  --c-ink-900: 78 50 39;
+  --c-ink-950: 51 32 27;
+
+  /* —— 主色：赭红（锚色 #9A4C43，6.02:1，可做按钮底配白字）—— */
+  --c-accent-400: 184 105 94;
+  --c-accent-500: 154 76 67;
+  --c-accent-600: 126 60 53;
+
+  /* —— 状态 —— */
+  /** 翡翠深化（锚色 #03875C 衬 tint 只有 4.21，差一点） */
+  --c-state-ok: 3 117 80;
+  /** 沙金深化（沙金太亮，做文字必须压到暗金褐） */
+  --c-state-wait: 138 97 20;
+  /** 赭红锚色 */
+  --c-state-bad: 154 76 67;
+  /** 灰紫深化（锚色 #AAAAC2 只有 2.27:1） */
+  --c-state-info: 90 90 120;
+  /** 灰紫锚色：只做灰点/占位 */
+  --c-state-idle: 170 170 194;
+
+  /*
+   * 装饰槽位（`decor-*`）：**只画 3px 色条，不承载文字**。
+   *
+   * 正因为不承载文字，这里可以**直接用纯净的锚色**——沙金、翡翠、灰紫、赭红
+   * 四个锚色终于以本色出现在界面上，而不是只活在"色相"里。
+   * 剩下两个（peach/sky）是它们的浅调，补足六个槽位。
+   */
+  --c-decor-pink: 233 205 191;
+  /** 锚色 #03875C 翡翠 */
+  --c-decor-mint: 3 135 92;
+  /** 锚色 #AAAAC2 灰紫 */
+  --c-decor-lilac: 170 170 194;
+  /** 锚色 #ECD98B 沙金 */
+  --c-decor-butter: 236 217 139;
+  --c-decor-peach: 238 217 199;
+  --c-decor-sky: 203 215 218;
+
+  /* —— 形状与节奏：壁画是平的、方的 —— */
+  --r-control: 6px;
+  --r-surface: 10px;
+  --shadow-card: 0 1px 2px rgba(78, 50, 39, 0.06);
+  --shadow-pop: 0 10px 28px -12px rgba(78, 50, 39, 0.22), 0 0 0 1px rgba(78, 50, 39, 0.07);
+  --shadow-float: 0 4px 12px -6px rgba(78, 50, 39, 0.14);
+  --pad-card-x: 1.5rem;
+  --pad-card-y: 1.25rem;
+  --dur-quick: 110ms;
+  --dur-base: 150ms;
+  --ease-soft: cubic-bezier(0.2, 0, 0.15, 1);
+
+  /* —— 字体 —— */
+  --font-body: 'Segoe UI', 'Microsoft YaHei UI', system-ui, sans-serif;
+  --font-display: var(--font-body);
+  --font-mono: 'Cascadia Code', Consolas, 'JetBrains Mono', monospace;
+}
+
+/**
+ * 备用主题一：`classic`（暖紫中性）。
+ *
+ * 这是应用最初的配色，原样保留——有人用惯了它。
+ * 它不是默认值了，所以从 `:root` 挪到了这里。
+ */
+[data-theme='classic'] {
+  --c-canvas: 251 249 254;
+  --c-surface: 255 255 255;
+  --c-field: 255 255 255;
+  --c-inverse: 44 38 55;
+  --c-on-inverse: 255 255 255;
+  --c-scrim: 44 38 55;
+
+  --c-ink-50: 250 248 253;
+  --c-ink-100: 243 238 249;
+  --c-ink-200: 230 223 240;
+  --c-ink-300: 205 195 220;
+  --c-ink-400: 169 155 192;
+  --c-ink-500: 107 95 128;
+  --c-ink-600: 86 75 106;
+  --c-ink-700: 69 60 86;
+  --c-ink-800: 55 48 67;
+  --c-ink-900: 44 38 55;
+  --c-ink-950: 28 23 36;
+
+  --c-accent-400: 139 121 201;
+  --c-accent-500: 109 91 184;
+  --c-accent-600: 86 71 154;
+
+  --c-state-ok: 15 118 110;
+  --c-state-wait: 180 83 9;
+  --c-state-bad: 190 18 60;
+  --c-state-info: 29 78 216;
+  --c-state-idle: 169 155 192;
+
+  --c-decor-pink: 249 213 229;
+  --c-decor-mint: 205 238 224;
+  --c-decor-lilac: 221 210 243;
+  --c-decor-butter: 251 238 194;
+  --c-decor-peach: 251 220 203;
+  --c-decor-sky: 207 228 245;
+
+  --r-control: 10px;
+  --r-surface: 14px;
+  --shadow-card: 0 1px 3px rgba(76, 58, 112, 0.06);
+  --shadow-pop: 0 10px 30px -8px rgba(76, 58, 112, 0.2), 0 0 0 1px rgba(76, 58, 112, 0.06);
+  --shadow-float: 0 6px 16px -6px rgba(76, 58, 112, 0.16);
+  --pad-card-x: 1.25rem;
+  --pad-card-y: 1rem;
+  --dur-quick: 120ms;
+  --dur-base: 180ms;
+  --ease-soft: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/**
+ * 备用主题二：`claude`（纸墨）。
+ *
+ * 它不是"更暖的马卡龙"，而是另一种设计语言：**印刷品**。
+ * 米白纸、赤陶橙作主色、深墨棕作反色面，层次靠 1px 描边和底色差，
+ * 不靠投影；圆角比经典更小（8/12），留白比谁都多（24/20）。
+ *
+ * ### 三处刻意的偏离
+ *
+ * 1. **主色不用 logo 原色**。Anthropic 的 `#d97757` 做白字底只有 **3.12:1**，
+ *    所以 `accent-500` 压到 `#b8552f`（4.80:1）；logo 原色留给 `accent-400`，
+ *    它只做焦点环和输入框描边，不承载文字。
+ * 2. **中性色全部带黄**（`#6e6a5f`，不是冷灰）。这一步才是"暖"的真正来源——
+ *    灰阶不变只换强调色，看起来像"给旧界面加了个橙色按钮"。
+ * 3. **状态色跟着变土**：橄榄 / 赭石 / 砖红 / 石板蓝，最低 5.63:1。
+ *
+ * `scrim` 仍是深色（启动页和 Dock 用它），这里取深墨棕 `#2b2a26`——
+ * 它比默认主题的 `#3A2520` 更冷一点，但同为深底，`night-*` 四档照常可用。
+ */
+[data-theme='claude'] {
+  /* —— 语义面：米白纸 + 白卡 + 深墨棕 —— */
+  --c-canvas: 250 249 245;
+  --c-surface: 255 255 255;
+  --c-field: 245 243 236;
+  --c-inverse: 43 42 38;
+  --c-on-inverse: 255 255 255;
+  --c-scrim: 43 42 38;
+
+  /* —— 中性：全部带黄（暖褐灰，不是冷灰）—— */
+  --c-ink-50: 246 245 240;
+  --c-ink-100: 240 238 231;
+  --c-ink-200: 228 225 216;
+  --c-ink-300: 205 201 190;
+  /** 2.55:1 —— 只做边框/分隔/禁用 */
+  --c-ink-400: 168 163 149;
+  /** 5.40:1 —— 文字色的最低档 */
+  --c-ink-500: 110 106 95;
+  --c-ink-600: 92 88 79;
+  --c-ink-700: 76 73 65;
+  --c-ink-800: 58 56 50;
+  /** 正文（14.36:1） */
+  --c-ink-900: 43 42 38;
+  --c-ink-950: 28 27 24;
+
+  /* —— 主色：赤陶橙（4.80:1，可配白字）—— */
+  /** logo 原色 `#d97757`：只做焦点环，白字底只有 3.12 */
+  --c-accent-400: 217 119 87;
+  --c-accent-500: 184 85 47;
+  --c-accent-600: 156 69 38;
+
+  /* —— 状态：矿物色，全部过三道对比度 —— */
+  /** 橄榄 5.86:1 */
+  --c-state-ok: 70 112 12;
+  /** 赭石 5.63:1 */
+  --c-state-wait: 150 89 13;
+  /** 砖红 6.54:1 */
+  --c-state-bad: 179 38 30;
+  /** 石板蓝 5.75:1 */
+  --c-state-info: 58 107 138;
+  /** 暖灰：只做灰点/占位 */
+  --c-state-idle: 168 163 149;
+
+  /* —— 装饰槽位：纸墨同源的六个矿物色，只画色条不承载文字 —— */
+  --c-decor-pink: 232 196 180;
+  /** 鼠尾草 */
+  --c-decor-mint: 195 203 178;
+  /** 雾 */
+  --c-decor-lilac: 207 208 203;
+  /** 奶油 */
+  --c-decor-butter: 240 229 200;
+  /** 陶土 */
+  --c-decor-peach: 217 180 156;
+  /** 沙 */
+  --c-decor-sky: 230 221 198;
+
+  /* —— 形状与节奏：印刷品是方正克制的 —— */
+  --r-control: 8px;
+  --r-surface: 12px;
+  --shadow-card: 0 1px 2px rgba(38, 37, 33, 0.04);
+  --shadow-pop: 0 10px 28px -12px rgba(38, 37, 33, 0.16), 0 0 0 1px rgba(38, 37, 33, 0.06);
+  --shadow-float: 0 4px 12px -6px rgba(38, 37, 33, 0.1);
+  --pad-card-x: 1.5rem;
+  --pad-card-y: 1.25rem;
+  --dur-quick: 120ms;
+  --dur-base: 160ms;
+  --ease-soft: cubic-bezier(0.2, 0, 0.2, 1);
+}
+
+[data-font='editorial'] {
+  --font-display: 'Iowan Old Style', 'Source Han Serif SC', 'Noto Serif SC', 'Songti SC', SimSun,
+    Georgia, serif;
+}
+
+[data-font='technical'] {
+  --font-display: var(--font-mono);
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  /*
+   * 直接写 `rgb(var(--c-canvas))` 而不是 `theme('colors.canvas')`：
+   * Tailwind 的 theme() 对变量色会展开成 `rgb(var(--c-canvas) / <alpha-value>)`，
+   * 而 `<alpha-value>` 在普通 CSS 属性里不会被替换 → 整条声明失效、背景变透明。
+   * 这个坑很隐蔽：页面看着"好像还是白的"，其实是 html 的默认白。
+   */
+  background: rgb(var(--c-canvas));
+  color: rgb(var(--c-ink-900));
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow: hidden;
+  user-select: none;
+}
+
+/* 选中文字：用装饰淡紫，和主色同调 */
+::selection {
+  background: rgb(var(--c-decor-lilac));
+  color: rgb(var(--c-ink-900));
+}
+
+/* 无边框窗口：只有标记了 drag 的区域能拖 */
+.drag-region {
+  -webkit-app-region: drag;
+}
+
+.no-drag {
+  -webkit-app-region: no-drag;
+}
+
+/* 结果区要能选中复制（错误原文、指纹都要能贴给同学看） */
+.selectable {
+  user-select: text;
+}
+
+/**
+ * 键盘焦点环。
+ *
+ * 这个应用主打键盘优先（Ctrl+K、↑↓ 选、Esc 关），纯键盘用户必须看得见焦点。
+ * 用 `:focus-visible` 而不是 `:focus`：鼠标点按钮不该出现外框，只有 Tab 过来才需要。
+ *
+ * 环色跟随主题主色，所以要在**每套主题下**都验算它衬在 surface / inverse 上的可见度。
+ */
+:where(button, a, [role='button'], summary, [tabindex]):focus-visible {
+  outline: 2px solid rgb(var(--c-accent-500));
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+:where(input, select, textarea):focus-visible {
+  outline: 2px solid rgb(var(--c-accent-400));
+  outline-offset: -1px;
+}
+
+/* 反色面（主按钮）上的环要更亮，否则和深底糊在一起 */
+:where(button).bg-inverse:focus-visible,
+:where(button).bg-scrim:focus-visible {
+  outline-color: rgb(var(--c-accent-400));
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgb(var(--c-accent-400) / 0.32);
+}
+
+/**
+ * 尊重系统的"减少动态效果"设置。
+ *
+ * 应用里有 6 处 animate-pulse / spin / ping。对前庭功能敏感的用户，
+ * 这些持续动画会真的不适。关掉之后功能不受影响——它们都只是"还在动"的暗示。
+ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgb(var(--c-ink-300));
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(var(--c-ink-400));
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}

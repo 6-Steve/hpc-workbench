@@ -1,0 +1,90 @@
+# 打包配置（electron-builder）。
+#
+# 目标只有一个：**装完双击就能用，不需要装 Node**。
+# 所以刻意做了三件事：安装到用户目录（不要管理员）、配置写到 %APPDATA%（不写安装目录）、
+# 卸载时保留配置（重装不用重填）。
+#
+# 生成安装包：npm run dist
+# 只生成免安装目录（调试用，快很多）：npm run pack
+#
+# 首次打包会下载 NSIS 工具链。国内网络常报 `Response code 502`，设一次镜像即可：
+#   ELECTRON_BUILDER_BINARIES_MIRROR=https://npmmirror.com/mirrors/electron-builder-binaries/
+# 下载过就进缓存，之后不用再设。
+
+appId: com.hpc.workbench
+# 必须是 ASCII：productName 会变成 exe 文件名、安装目录名、%APPDATA% 下的目录名。
+# 中文名在部分机器上会让路径编码出问题（尤其是用户名本身就是中文时叠加）。
+productName: HPC Workbench
+copyright: Copyright © 2026
+
+directories:
+  output: release
+  buildResources: build
+
+# 用**本地已安装**的那份 Electron 出包，不去 GitHub 下载。
+#
+# 两个理由，第二个更重要：
+# 1. 省一次 120 MB 下载。直连 GitHub 在国内经常 `connect ETIMEDOUT 20.205.243.166:443`
+#    （这个 IP 就是 github.com），而 electronDist 完全不碰网络，断网也能出包。
+# 2. **dev 和装出来的必须是同一个二进制**。`npm run dev` 跑的就是
+#    `node_modules/electron/dist`，用别处下载的包会让"开发时好的、装完就崩"
+#    变成一类极难查的差异（Chromium 版本、node ABI、字体渲染都可能不同）。
+#
+# 前提：`npm install` 正常跑完（electron 的 postinstall 会下这份 dist）。
+# 如果 `npm install` 时设过 `ELECTRON_SKIP_BINARY_DOWNLOAD=1`，这里就找不到，
+# 那时要么补装一次，要么临时改回让 electron-builder 自己下载并设
+# `ELECTRON_MIRROR=https://npmmirror.com/mirrors/electron/`。
+electronDist: node_modules/electron/dist
+
+# 只收运行时真正需要的东西。
+# main/preload 已被 electron-vite 打成单文件 bundle，所以源码不用进包；
+# 生产依赖（ssh2 / electron-store / tar-stream / zustand / xterm）由 electron-builder
+# 按 package.json 的 dependencies 自动收进 app.asar，**不需要在这里写 node_modules**。
+files:
+  - out/**/*
+  - package.json
+  # 托盘图标：运行时从 app.getAppPath()/build/icon.ico 读，不打进去托盘就是空白
+  - build/icon.ico
+  - '!**/*.map'
+  # ssh2 的可选原生加速模块（cpu-features）。本机安装时它没有编译出 .node，
+  # 而 ssh2 自己是 `try { require('cpu-features')() } catch {}`——缺了就走纯 JS，
+  # 功能不受影响。收进来反而会让 electron-builder 去 rebuild 原生模块（要 MSVC）。
+  - '!node_modules/cpu-features/**'
+  # ssh2 的原生加解密绑定 `sshcrypto.node` 及它的 MSVC 中间产物（.obj/.iobj/.tlog）。
+  # 它是按**本机 node 22 的 ABI** 编的，Electron 33（node 20.x）里 load 不起来，
+  # ssh2 也是 `try { require(...) } catch {}`，缺了走纯 JS。留着只有两个坏处：
+  # 包里多出几百 KB 编译日志，而且让人以为"不是说好不用需要编译的模块吗"。
+  - '!node_modules/ssh2/lib/protocol/crypto/build/**'
+
+asar: true
+
+# 没有原生模块要重编，跳过这一步能省掉一整轮 node-gyp
+npmRebuild: false
+
+# 配置模板跟着安装包走：用户第一次配置时从 resources/ 里复制。
+# 放在 asar **外面**，这样资源管理器里能直接看到、双击打开。
+extraResources:
+  - from: profiles.example.json
+    to: profiles.example.json
+
+win:
+  target:
+    - target: nsis
+      arch: [x64]
+  icon: build/icon.ico
+  artifactName: ${productName}-${version}-setup.${ext}
+
+nsis:
+  # 不要 oneClick：一键安装会装到默认位置且不给选，同学想装到 D 盘就没辙
+  oneClick: false
+  # perMachine=false → 装到 %LOCALAPPDATA%\Programs，**全程不需要管理员密码**。
+  # 这是"发给同学"能不能成功的关键一步：很多人不是管理员。
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: HPC 工作台
+  # 卸载不删配置：profiles.json 里是主机账号，删了就得重填
+  deleteAppDataOnUninstall: false
+  # 安装完不自动启动：先让人看到"装好了"，而不是突然弹一个窗口
+  runAfterFinish: false

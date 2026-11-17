@@ -1,0 +1,351 @@
+{
+  "meta": {
+    "plugin": "data_parser/v0.0.40",
+    "Slurm": {
+      "version": {
+        "major": 23,
+        "minor": 2,
+        "micro": 3
+      }
+    }
+  },
+  "jobs": [
+    {
+      "job_id": 203248,
+      "name": "case-retest",
+      "user": "user01",
+      "group": "user01",
+      "account": "users",
+      "partition": "compute",
+      "qos": "compute",
+      "cluster": "cluster",
+      "state": {
+        "current": "FAILED",
+        "reason": "None"
+      },
+      "exit_code": {
+        "status": "SUCCESS",
+        "return_code": 0
+      },
+      "derived_exit_code": {
+        "status": "SUCCESS",
+        "return_code": 0
+      },
+      "nodes": "gpu01",
+      "allocation_nodes": 1,
+      "flags": [
+        "STARTED_ON_BACKFILL"
+      ],
+      "time": {
+        "elapsed": 85,
+        "eligible": 1793431550,
+        "end": 1793431659,
+        "start": 1793431574,
+        "submission": 1793431550,
+        "suspended": 0,
+        "limit": {
+          "set": true,
+          "infinite": false,
+          "number": 20
+        },
+        "total": {
+          "seconds": 0,
+          "microseconds": 0
+        },
+        "user": {
+          "seconds": 0,
+          "microseconds": 0
+        },
+        "system": {
+          "seconds": 0,
+          "microseconds": 0
+        }
+      },
+      "tres": {
+        "allocated": [
+          {
+            "type": "cpu",
+            "name": "",
+            "id": 1,
+            "count": 8
+          },
+          {
+            "type": "mem",
+            "name": "",
+            "id": 2,
+            "count": 98304
+          },
+          {
+            "type": "node",
+            "name": "",
+            "id": 4,
+            "count": 1
+          },
+          {
+            "type": "billing",
+            "name": "",
+            "id": 5,
+            "count": 8
+          },
+          {
+            "type": "gres",
+            "name": "gpu",
+            "id": 1001,
+            "count": 1
+          },
+          {
+            "type": "gres",
+            "name": "gpu:nvidia_h100_80gb_hbm3",
+            "id": 1020,
+            "count": 1
+          }
+        ],
+        "requested": [
+          {
+            "type": "cpu",
+            "name": "",
+            "id": 1,
+            "count": 8
+          },
+          {
+            "type": "gres",
+            "name": "gpu",
+            "id": 1001,
+            "count": 1
+          }
+        ]
+      },
+      "steps": [],
+      "working_directory": "/home/user01/projects/case-retest"
+    },
+    {
+      "job_id": 203263,
+      "name": "case-retest",
+      "user": "user01",
+      "group": "user01",
+      "account": "users",
+      "partition": "compute",
+      "qos": "compute",
+      "cluster": "cluster",
+      "state": {
+        "current": "CANCELLED",
+        "reason": "None"
+      },
+      "exit_code": {
+        "status": "SUCCESS",
+        "return_code": 0
+      },
+      "derived_exit_code": {
+        "status": "SUCCESS",
+        "return_code": 0
+      },
+      "nodes": "gpu02",
+      "allocation_nodes": 1,
+      "time": {
+        "elapsed": 12,
+        "eligible": 1793432000,
+        "end": 1793432012,
+        "start": 1793432000,
+        "submission": 1793431980,
+        "suspended": 0,
+        "limit": {
+          "set": true,
+          "infinite": false,
+          "number": 20
+        },
+        "total": {
+          "seconds": 0,
+          "microseconds": 0
+        },
+        "user": {
+          "seconds": 0,
+          "microseconds": 0
+        },
+        "system": {
+          "seconds": 0,
+          "microseconds": 0
+        }
+      },
+      "tres": {
+        "allocated": [
+          {
+            "type": "cpu",
+            "name": "",
+            "id": 1,
+            "count": 8
+          },
+          {
+            "type": "node",
+            "name": "",
+            "id": 4,
+            "count": 1
+          }
+        ],
+        "requested": [
+          {
+            "type": "cpu",
+            "name": "",
+            "id": 1,
+            "count": 8
+          }
+        ]
+      },
+      "steps": [],
+      "working_directory": "/home/user01/projects/case-retest"
+    },
+    {
+      "job_id": 195275,
+      "name": "msq-eeb3eaab",
+      "user": "user01",
+      "group": "user01",
+      "account": "users",
+      "partition": "compute",
+      "qos": "compute",
+      "cluster": "cluster",
+      "state": {
+        "current": "COMPLETED",
+        "reason": "None"
+      },
+      "exit_code": {
+        "status": "SUCCESS",
+        "return_code": 0
+      },
+      "derived_exit_code": {
+        "status": "SUCCESS",
+        "return_code": 0
+      },
+      "nodes": "gpu03",
+      "allocation_nodes": 2,
+      "time": {
+        "elapsed": 7260,
+        "eligible": 1792567269,
+        "end": 1792574529,
+        "start": 1792567269,
+        "submission": 1792567260,
+        "suspended": 0,
+        "limit": {
+          "set": true,
+          "infinite": false,
+          "number": 180
+        },
+        "total": {
+          "seconds": 0,
+          "microseconds": 0
+        },
+        "user": {
+          "seconds": 0,
+          "microseconds": 0
+        },
+        "system": {
+          "seconds": 0,
+          "microseconds": 0
+        }
+      },
+      "tres": {
+        "allocated": [
+          {
+            "type": "cpu",
+            "name": "",
+            "id": 1,
+            "count": 16
+          },
+          {
+            "type": "node",
+            "name": "",
+            "id": 4,
+            "count": 2
+          },
+          {
+            "type": "gres",
+            "name": "gpu",
+            "id": 1001,
+            "count": 4
+          }
+        ],
+        "requested": [
+          {
+            "type": "cpu",
+            "name": "",
+            "id": 1,
+            "count": 16
+          }
+        ]
+      },
+      "steps": [],
+      "working_directory": "/home/user01/projects/msq"
+    },
+    {
+      "job_id": 205001,
+      "name": "still-running",
+      "user": "user01",
+      "group": "user01",
+      "account": "users",
+      "partition": "compute",
+      "qos": "compute",
+      "cluster": "cluster",
+      "state": {
+        "current": "RUNNING",
+        "reason": "None"
+      },
+      "exit_code": {
+        "status": "SUCCESS",
+        "return_code": 0
+      },
+      "nodes": "gpu04",
+      "allocation_nodes": 1,
+      "time": {
+        "elapsed": 300,
+        "eligible": 1793500000,
+        "end": 0,
+        "start": 1793500000,
+        "submission": 1793499990,
+        "suspended": 0,
+        "limit": {
+          "set": true,
+          "infinite": true,
+          "number": 0
+        },
+        "total": {
+          "seconds": 0,
+          "microseconds": 0
+        },
+        "user": {
+          "seconds": 0,
+          "microseconds": 0
+        },
+        "system": {
+          "seconds": 0,
+          "microseconds": 0
+        }
+      },
+      "tres": {
+        "allocated": [
+          {
+            "type": "cpu",
+            "name": "",
+            "id": 1,
+            "count": 4
+          },
+          {
+            "type": "node",
+            "name": "",
+            "id": 4,
+            "count": 1
+          }
+        ],
+        "requested": [
+          {
+            "type": "cpu",
+            "name": "",
+            "id": 1,
+            "count": 4
+          }
+        ]
+      },
+      "steps": [],
+      "working_directory": "/home/user01/projects/live"
+    }
+  ],
+  "warnings": [],
+  "errors": []
+}

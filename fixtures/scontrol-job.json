@@ -1,0 +1,325 @@
+{
+  "meta": {
+    "plugins": {
+      "data_parser": "data_parser/v0.0.39",
+      "accounting_storage": "accounting_storage/slurmdbd"
+    },
+    "command": [
+      "show",
+      "job",
+      "203815"
+    ],
+    "Slurm": {
+      "version": {
+        "major": 23,
+        "micro": 3,
+        "minor": 2
+      },
+      "release": "23.02.3"
+    }
+  },
+  "jobs": [
+    {
+      "account": "users",
+      "accrue_time": 1793445816,
+      "admin_comment": "",
+      "allocating_node": "login-01",
+      "array_job_id": {
+        "set": true,
+        "infinite": false,
+        "number": 0
+      },
+      "array_task_id": {
+        "set": false,
+        "infinite": false,
+        "number": 0
+      },
+      "array_max_tasks": {
+        "set": true,
+        "infinite": false,
+        "number": 0
+      },
+      "array_task_string": "",
+      "association_id": 171,
+      "batch_features": "",
+      "batch_flag": true,
+      "batch_host": "gpu21",
+      "flags": [
+        "EXACT_TASK_COUNT_REQUESTED",
+        "EXACT_CPU_COUNT_REQUESTED",
+        "ACCRUE_COUNT_CLEARED",
+        "JOB_WAS_RUNNING",
+        "EXACT_MEMORY_REQUESTED",
+        "USING_DEFAULT_ACCOUNT",
+        "USING_DEFAULT_QOS",
+        "USING_DEFAULT_WCKEY"
+      ],
+      "burst_buffer": "",
+      "burst_buffer_state": "",
+      "cluster": "cluster",
+      "cluster_features": "",
+      "command": "/home/user01/projects/models/demo-project/train_all.sh",
+      "comment": "",
+      "container": "",
+      "container_id": "",
+      "contiguous": false,
+      "core_spec": 0,
+      "thread_spec": 32766,
+      "cores_per_socket": {
+        "set": false,
+        "infinite": false,
+        "number": 0
+      },
+      "billable_tres": {
+        "set": true,
+        "infinite": false,
+        "number": 16
+      },
+      "cpus_per_task": {
+        "set": true,
+        "infinite": false,
+        "number": 16
+      },
+      "cpu_frequency_minimum": {
+        "set": false,
+        "infinite": false,
+        "number": 0
+      },
+      "cpu_frequency_maximum": {
+        "set": false,
+        "infinite": false,
+        "number": 0
+      },
+      "cpu_frequency_governor": {
+        "set": false,
+        "infinite": false,
+        "number": 0
+      },
+      "cpus_per_tres": "",
+      "cron": "",
+      "deadline": 0,
+      "delay_boot": {
+        "set": true,
+        "infinite": false,
+        "number": 0
+      },
+      "dependency": "",
+      "derived_exit_code": 0,
+      "eligible_time": 1793445816,
+      "end_time": 1793726506,
+      "excluded_nodes": "",
+      "exit_code": 0,
+      "extra": "",
+      "failed_node": "",
+      "features": "",
+      "federation_origin": "",
+      "federation_siblings_active": "",
+      "federation_siblings_viable": "",
+      "gres_detail": [
+        "gpu:a100-sxm4-80gb:2(IDX:4-5)"
+      ],
+      "group_id": 10000,
+      "group_name": "hpc",
+      "het_job_id": {
+        "set": true,
+        "infinite": false,
+        "number": 0
+      },
+      "het_job_id_set": "",
+      "het_job_offset": {
+        "set": true,
+        "infinite": false,
+        "number": 0
+      },
+      "job_id": 203815,
+      "job_resources": {
+        "nodes": "gpu21",
+        "allocated_cores": 16,
+        "allocated_cpus": 0,
+        "allocated_hosts": 1,
+        "allocated_nodes": [
+          {
+            "sockets": {
+              "1": {
+                "cores": {
+                  "3": "allocated_and_in_use",
+                  "6": "allocated_and_in_use",
+                  "7": "allocated_and_in_use",
+                  "8": "allocated_and_in_use",
+                  "9": "allocated_and_in_use",
+                  "10": "allocated_and_in_use",
+                  "11": "allocated_and_in_use",
+                  "12": "allocated_and_in_use"
+                }
+              }
+            },
+            "nodename": "gpu21",
+            "cpus_used": 16,
+            "memory_used": 65536,
+            "memory_allocated": 65536
+          }
+        ]
+      },
+      "job_size_str": [],
+      "job_state": "RUNNING",
+      "last_sched_evaluation": 1793467306,
+      "licenses": "",
+      "mail_type": [],
+      "mail_user": "user01",
+      "max_cpus": {
+        "set": true,
+        "infinite": false,
+        "number": 0
+      },
+      "max_nodes": {
+        "set": true,
+        "infinite": false,
+        "number": 0
+      },
+      "mcs_label": "",
+      "memory_per_tres": "",
+      "name": "demo-train",
+      "network": "",
+      "nodes": "gpu21",
+      "nice": 0,
+      "tasks_per_core": {
+        "set": false,
+        "infinite": true,
+        "number": 0
+      },
+      "tasks_per_tres": {
+        "set": true,
+        "infinite": false,
+        "number": 0
+      },
+      "tasks_per_node": {
+        "set": true,
+        "infinite": false,
+        "number": 0
+      },
+      "tasks_per_socket": {
+        "set": false,
+        "infinite": true,
+        "number": 0
+      },
+      "tasks_per_board": {
+        "set": true,
+        "infinite": false,
+        "number": 0
+      },
+      "cpus": {
+        "set": true,
+        "infinite": false,
+        "number": 16
+      },
+      "node_count": {
+        "set": true,
+        "infinite": false,
+        "number": 1
+      },
+      "tasks": {
+        "set": true,
+        "infinite": false,
+        "number": 1
+      },
+      "partition": "compute",
+      "prefer": "",
+      "memory_per_cpu": {
+        "set": false,
+        "infinite": false,
+        "number": 0
+      },
+      "memory_per_node": {
+        "set": true,
+        "infinite": false,
+        "number": 65536
+      },
+      "minimum_cpus_per_node": {
+        "set": true,
+        "infinite": false,
+        "number": 16
+      },
+      "minimum_tmp_disk_per_node": {
+        "set": true,
+        "infinite": false,
+        "number": 0
+      },
+      "power": {
+        "flags": []
+      },
+      "preempt_time": 0,
+      "preemptable_time": 1793467306,
+      "pre_sus_time": 0,
+      "priority": {
+        "set": true,
+        "infinite": false,
+        "number": 109679
+      },
+      "profile": [
+        "NOT_SET"
+      ],
+      "qos": "compute",
+      "reboot": false,
+      "required_nodes": "",
+      "minimum_switches": 0,
+      "requeue": true,
+      "resize_time": 0,
+      "restart_cnt": 0,
+      "resv_name": "",
+      "scheduled_nodes": "",
+      "selinux_context": "",
+      "shared": [],
+      "exclusive": [],
+      "oversubscribe": true,
+      "show_flags": [
+        "DETAIL",
+        "LOCAL"
+      ],
+      "sockets_per_board": 0,
+      "sockets_per_node": {
+        "set": false,
+        "infinite": false,
+        "number": 0
+      },
+      "start_time": 1793467306,
+      "state_description": "",
+      "state_reason": "None",
+      "standard_error": "/home/user01/projects/models/demo-project/demo-train-203815.log",
+      "standard_input": "/dev/null",
+      "standard_output": "/home/user01/projects/models/demo-project/demo-train-203815.log",
+      "submit_time": 1793445816,
+      "suspend_time": 0,
+      "system_comment": "",
+      "time_limit": {
+        "set": true,
+        "infinite": false,
+        "number": 4320
+      },
+      "time_minimum": {
+        "set": true,
+        "infinite": false,
+        "number": 0
+      },
+      "threads_per_core": {
+        "set": false,
+        "infinite": false,
+        "number": 0
+      },
+      "tres_bind": "",
+      "tres_freq": "",
+      "tres_per_job": "",
+      "tres_per_node": "gres:gpu:a100-sxm4-80gb:2",
+      "tres_per_socket": "",
+      "tres_per_task": "",
+      "tres_req_str": "cpu=16,mem=64G,node=1,billing=16,gres/gpu=2,gres/gpu:a100-sxm4-80gb=2",
+      "tres_alloc_str": "cpu=16,mem=64G,node=1,billing=16,gres/gpu=2,gres/gpu:a100-sxm4-80gb=2",
+      "user_id": 10165,
+      "user_name": "user01",
+      "maximum_switch_wait_time": 0,
+      "wckey": "",
+      "current_working_directory": "/home/user01/projects/models/demo-project"
+    }
+  ],
+  "warnings": [],
+  "errors": []
+}

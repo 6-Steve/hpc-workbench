@@ -1,0 +1,2143 @@
+{
+  "meta": {
+    "plugins": {
+      "data_parser": "data_parser\/v0.0.39",
+      "accounting_storage": "accounting_storage\/slurmdbd"
+    },
+    "command": [
+      "show",
+      "node"
+    ],
+    "Slurm": {
+      "version": {
+        "major": 23,
+        "micro": 3,
+        "minor": 2
+      },
+      "release": "23.02.3"
+    }
+  },
+  "nodes": [
+    {
+      "architecture": "x86_64",
+      "burstbuffer_network_address": "",
+      "boards": 1,
+      "boot_time": 1789655409,
+      "cluster_name": "",
+      "cores": 32,
+      "specialized_cores": 0,
+      "cpu_binding": 0,
+      "cpu_load": {
+        "set": true,
+        "infinite": false,
+        "number": 379
+      },
+      "free_mem": {
+        "set": true,
+        "infinite": false,
+        "number": 153283
+      },
+      "cpus": 128,
+      "effective_cpus": 128,
+      "specialized_cpus": "",
+      "energy": {
+        "average_watts": 0,
+        "base_consumed_energy": 0,
+        "consumed_energy": 0,
+        "current_watts": 0,
+        "previous_consumed_energy": 0,
+        "last_collected": 0
+      },
+      "external_sensors": {
+        "consumed_energy": {
+          "set": false,
+          "infinite": false,
+          "number": 0
+        },
+        "temperature": {
+          "set": false,
+          "infinite": false,
+          "number": 0
+        },
+        "energy_update_time": 0,
+        "current_watts": 0
+      },
+      "extra": "",
+      "power": {
+        "maximum_watts": {
+          "set": false,
+          "infinite": false,
+          "number": 0
+        },
+        "current_watts": 0,
+        "total_energy": 0,
+        "new_maximum_watts": 0,
+        "peak_watts": 0,
+        "lowest_watts": 0,
+        "new_job_time": 0,
+        "state": 0,
+        "time_start_day": 0
+      },
+      "features": [
+      ],
+      "active_features": [
+      ],
+      "gres": "gpu:nvidia_h100_80gb_hbm3:2(S:1)",
+      "gres_drained": "N\/A",
+      "gres_used": "gpu:nvidia_h100_80gb_hbm3:1(IDX:0)",
+      "last_busy": 1793348274,
+      "mcs_label": "",
+      "specialized_memory": 0,
+      "name": "node01",
+      "next_state_after_reboot": [
+        "INVALID",
+        "PERFCTRS",
+        "RESERVED",
+        "UNDRAIN",
+        "CLOUD",
+        "RESUME",
+        "DRAIN",
+        "COMPLETING",
+        "NOT_RESPONDING",
+        "POWERED_DOWN",
+        "FAIL",
+        "POWERING_UP",
+        "MAINTENANCE",
+        "REBOOT_REQUESTED",
+        "REBOOT_CANCELED",
+        "POWERING_DOWN",
+        "DYNAMIC_FUTURE",
+        "REBOOT_ISSUED",
+        "PLANNED",
+        "INVALID_REG",
+        "POWER_DOWN",
+        "POWER_UP",
+        "POWER_DRAIN",
+        "DYNAMIC_NORM"
+      ],
+      "address": "node01",
+      "hostname": "node01",
+      "state": [
+        "ALLOCATED"
+      ],
+      "operating_system": "Linux 5.15.0-186-generic #196-Ubuntu SMP Sat Jun 20 16:09:34 UTC 2026",
+      "owner": "",
+      "partitions": [
+        "compute"
+      ],
+      "port": 6818,
+      "real_memory": 450091,
+      "comment": "",
+      "reason": "",
+      "reason_changed_at": 0,
+      "reason_set_by_user": "",
+      "resume_after": {
+        "set": true,
+        "infinite": false,
+        "number": 0
+      },
+      "reservation": "",
+      "alloc_memory": 122880,
+      "alloc_cpus": 32,
+      "alloc_idle_cpus": 96,
+      "tres_used": "cpu=32,mem=120G,gres\/gpu=1,gres\/gpu:nvidia_h100_80gb_hbm3=1",
+      "tres_weighted": 32.0,
+      "slurmd_start_time": 1789655259,
+      "sockets": 2,
+      "threads": 2,
+      "temporary_disk": 0,
+      "weight": 1,
+      "tres": "cpu=128,mem=450091M,billing=128,gres\/gpu=2,gres\/gpu:nvidia_h100_80gb_hbm3=2",
+      "version": "23.02.3"
+    },
+    {
+      "architecture": "x86_64",
+      "burstbuffer_network_address": "",
+      "boards": 1,
+      "boot_time": 1790043542,
+      "cluster_name": "",
+      "cores": 32,
+      "specialized_cores": 0,
+      "cpu_binding": 0,
+      "cpu_load": {
+        "set": true,
+        "infinite": false,
+        "number": 2
+      },
+      "free_mem": {
+        "set": false,
+        "infinite": false,
+        "number": 0
+      },
+      "cpus": 128,
+      "effective_cpus": 128,
+      "specialized_cpus": "",
+      "energy": {
+        "average_watts": 0,
+        "base_consumed_energy": 0,
+        "consumed_energy": 0,
+        "current_watts": 0,
+        "previous_consumed_energy": 0,
+        "last_collected": 0
+      },
+      "external_sensors": {
+        "consumed_energy": {
+          "set": false,
+          "infinite": false,
+          "number": 0
+        },
+        "temperature": {
+          "set": false,
+          "infinite": false,
+          "number": 0
+        },
+        "energy_update_time": 0,
+        "current_watts": 0
+      },
+      "extra": "",
+      "power": {
+        "maximum_watts": {
+          "set": false,
+          "infinite": false,
+          "number": 0
+        },
+        "current_watts": 0,
+        "total_energy": 0,
+        "new_maximum_watts": 0,
+        "peak_watts": 0,
+        "lowest_watts": 0,
+        "new_job_time": 0,
+        "state": 0,
+        "time_start_day": 0
+      },
+      "features": [
+      ],
+      "active_features": [
+      ],
+      "gres": "gpu:nvidia_h100:2(S:0-1)",
+      "gres_drained": "N\/A",
+      "gres_used": "gpu:nvidia_h100:0(IDX:N\/A)",
+      "last_busy": 1792094058,
+      "mcs_label": "",
+      "specialized_memory": 0,
+      "name": "node02",
+      "next_state_after_reboot": [
+        "INVALID",
+        "PERFCTRS",
+        "RESERVED",
+        "UNDRAIN",
+        "CLOUD",
+        "RESUME",
+        "DRAIN",
+        "COMPLETING",
+        "NOT_RESPONDING",
+        "POWERED_DOWN",
+        "FAIL",
+        "POWERING_UP",
+        "MAINTENANCE",
+        "REBOOT_REQUESTED",
+        "REBOOT_CANCELED",
+        "POWERING_DOWN",
+        "DYNAMIC_FUTURE",
+        "REBOOT_ISSUED",
+        "PLANNED",
+        "INVALID_REG",
+        "POWER_DOWN",
+        "POWER_UP",
+        "POWER_DRAIN",
+        "DYNAMIC_NORM"
+      ],
+      "address": "node02",
+      "hostname": "node02",
+      "state": [
+        "DOWN",
+        "DRAIN",
+        "NOT_RESPONDING"
+      ],
+      "operating_system": "Linux 5.15.0-185-generic #195-Ubuntu SMP Fri Jun 19 17:11:50 UTC 2026",
+      "owner": "",
+      "partitions": [
+        "compute"
+      ],
+      "port": 6818,
+      "real_memory": 515609,
+      "comment": "",
+      "reason": "H100 GPU1 uncorrectable ECC and row remapping failure; maintenance 2026-10-15 : Not responding",
+      "reason_changed_at": 1792376947,
+      "reason_set_by_user": "root",
+      "resume_after": {
+        "set": true,
+        "infinite": false,
+        "number": 0
+      },
+      "reservation": "",
+      "alloc_memory": 0,
+      "alloc_cpus": 0,
+      "alloc_idle_cpus": 128,
+      "tres_used": "",
+      "tres_weighted": 0.0,
+      "slurmd_start_time": 1790046139,
+      "sockets": 2,
+      "threads": 2,
+      "temporary_disk": 0,
+      "weight": 1,
+      "tres": "cpu=128,mem=515609M,billing=128,gres\/gpu=2,gres\/gpu:nvidia_h100=2",
+      "version": ""
+    },
+    {
+      "architecture": "x86_64",
+      "burstbuffer_network_address": "",
+      "boards": 1,
+      "boot_time": 1789492331,
+      "cluster_name": "",
+      "cores": 32,
+      "specialized_cores": 0,
+      "cpu_binding": 0,
+      "cpu_load": {
+        "set": true,
+        "infinite": false,
+        "number": 378
+      },
+      "free_mem": {
+        "set": true,
+        "infinite": false,
+        "number": 213457
+      },
+      "cpus": 128,
+      "effective_cpus": 128,
+      "specialized_cpus": "",
+      "energy": {
+        "average_watts": 0,
+        "base_consumed_energy": 0,
+        "consumed_energy": 0,
+        "current_watts": 0,
+        "previous_consumed_energy": 0,
+        "last_collected": 0
+      },
+      "external_sensors": {
+        "consumed_energy": {
+          "set": false,
+          "infinite": false,
+          "number": 0
+        },
+        "temperature": {
+          "set": false,
+          "infinite": false,
+          "number": 0
+        },
+        "energy_update_time": 0,
+        "current_watts": 0
+      },
+      "extra": "",
+      "power": {
+        "maximum_watts": {
+          "set": false,
+          "infinite": false,
+          "number": 0
+        },
+        "current_watts": 0,
+        "total_energy": 0,
+        "new_maximum_watts": 0,
+        "peak_watts": 0,
+        "lowest_watts": 0,
+        "new_job_time": 0,
+        "state": 0,
+        "time_start_day": 0
+      },
+      "features": [
+      ],
+      "active_features": [
+      ],
+      "gres": "gpu:nvidia_h100:2(S:1)",
+      "gres_drained": "N\/A",
+      "gres_used": "gpu:nvidia_h100:2(IDX:0-1)",
+      "last_busy": 1793424054,
+      "mcs_label": "",
+      "specialized_memory": 0,
+      "name": "node04",
+      "next_state_after_reboot": [
+        "INVALID",
+        "PERFCTRS",
+        "RESERVED",
+        "UNDRAIN",
+        "CLOUD",
+        "RESUME",
+        "DRAIN",
+        "COMPLETING",
+        "NOT_RESPONDING",
+        "POWERED_DOWN",
+        "FAIL",
+        "POWERING_UP",
+        "MAINTENANCE",
+        "REBOOT_REQUESTED",
+        "REBOOT_CANCELED",
+        "POWERING_DOWN",
+        "DYNAMIC_FUTURE",
+        "REBOOT_ISSUED",
+        "PLANNED",
+        "INVALID_REG",
+        "POWER_DOWN",
+        "POWER_UP",
+        "POWER_DRAIN",
+        "DYNAMIC_NORM"
+      ],
+      "address": "node04",
+      "hostname": "node04",
+      "state": [
+        "ALLOCATED"
+      ],
+      "operating_system": "Linux 5.15.0-88-generic #98-Ubuntu SMP Mon Oct 2 15:18:56 UTC 2023",
+      "owner": "",
+      "partitions": [
+        "compute"
+      ],
+      "port": 6818,
+      "real_memory": 580123,
+      "comment": "",
+      "reason": "",
+      "reason_changed_at": 0,
+      "reason_set_by_user": "",
+      "resume_after": {
+        "set": true,
+        "infinite": false,
+        "number": 0
+      },
+      "reservation": "",
+      "alloc_memory": 303104,
+      "alloc_cpus": 16,
+      "alloc_idle_cpus": 112,
+      "tres_used": "cpu=16,mem=296G,gres\/gpu=2,gres\/gpu:nvidia_h100=2",
+      "tres_weighted": 16.0,
+      "slurmd_start_time": 1789492720,
+      "sockets": 2,
+      "threads": 2,
+      "temporary_disk": 0,
+      "weight": 1,
+      "tres": "cpu=128,mem=580123M,billing=128,gres\/gpu=2,gres\/gpu:nvidia_h100=2",
+      "version": "23.02.3"
+    },
+    {
+      "architecture": "x86_64",
+      "burstbuffer_network_address": "",
+      "boards": 1,
+      "boot_time": 1785492540,
+      "cluster_name": "",
+      "cores": 10,
+      "specialized_cores": 0,
+      "cpu_binding": 0,
+      "cpu_load": {
+        "set": true,
+        "infinite": false,
+        "number": 320
+      },
+      "free_mem": {
+        "set": true,
+        "infinite": false,
+        "number": 240539
+      },
+      "cpus": 40,
+      "effective_cpus": 40,
+      "specialized_cpus": "",
+      "energy": {
+        "average_watts": 0,
+        "base_consumed_energy": 0,
+        "consumed_energy": 0,
+        "current_watts": 0,
+        "previous_consumed_energy": 0,
+        "last_collected": 0
+      },
+      "external_sensors": {
+        "consumed_energy": {
+          "set": false,
+          "infinite": false,
+          "number": 0
+        },
+        "temperature": {
+          "set": false,
+          "infinite": false,
+          "number": 0
+        },
+        "energy_update_time": 0,
+        "current_watts": 0
+      },
+      "extra": "",
+      "power": {
+        "maximum_watts": {
+          "set": false,
+          "infinite": false,
+          "number": 0
+        },
+        "current_watts": 0,
+        "total_energy": 0,
+        "new_maximum_watts": 0,
+        "peak_watts": 0,
+        "lowest_watts": 0,
+        "new_job_time": 0,
+        "state": 0,
+        "time_start_day": 0
+      },
+      "features": [
+      ],
+      "active_features": [
+      ],
+      "gres": "gpu:nvidia_a100_80gb_pcie:7",
+      "gres_drained": "N\/A",
+      "gres_used": "gpu:nvidia_a100_80gb_pcie:2(IDX:1,5)",
+      "last_busy": 1791793639,
+      "mcs_label": "",
+      "specialized_memory": 0,
+      "name": "node05",
+      "next_state_after_reboot": [
+        "INVALID",
+        "PERFCTRS",
+        "RESERVED",
+        "UNDRAIN",
+        "CLOUD",
+        "RESUME",
+        "DRAIN",
+        "COMPLETING",
+        "NOT_RESPONDING",
+        "POWERED_DOWN",
+        "FAIL",
+        "POWERING_UP",
+        "MAINTENANCE",
+        "REBOOT_REQUESTED",
+        "REBOOT_CANCELED",
+        "POWERING_DOWN",
+        "DYNAMIC_FUTURE",
+        "REBOOT_ISSUED",
+        "PLANNED",
+        "INVALID_REG",
+        "POWER_DOWN",
+        "POWER_UP",
+        "POWER_DRAIN",
+        "DYNAMIC_NORM"
+      ],
+      "address": "node05",
+      "hostname": "node05",
+      "state": [
+        "ALLOCATED"
+      ],
+      "operating_system": "Linux 5.15.0-88-generic #98-Ubuntu SMP Mon Oct 2 15:18:56 UTC 2023",
+      "owner": "",
+      "partitions": [
+        "compute"
+      ],
+      "port": 6818,
+      "real_memory": 386822,
+      "comment": "",
+      "reason": "",
+      "reason_changed_at": 0,
+      "reason_set_by_user": "",
+      "resume_after": {
+        "set": true,
+        "infinite": false,
+        "number": 0
+      },
+      "reservation": "",
+      "alloc_memory": 103424,
+      "alloc_cpus": 8,
+      "alloc_idle_cpus": 32,
+      "tres_used": "cpu=8,mem=101G,gres\/gpu=2,gres\/gpu:nvidia_a100_80gb_pcie=2",
+      "tres_weighted": 8.0,
+      "slurmd_start_time": 1785492433,
+      "sockets": 2,
+      "threads": 2,
+      "temporary_disk": 0,
+      "weight": 1,
+      "tres": "cpu=40,mem=386822M,billing=40,gres\/gpu=7,gres\/gpu:nvidia_a100_80gb_pcie=7",
+      "version": "23.02.3"
+    },
+    {
+      "architecture": "x86_64",
+      "burstbuffer_network_address": "",
+      "boards": 1,
+      "boot_time": 1789655939,
+      "cluster_name": "",
+      "cores": 10,
+      "specialized_cores": 0,
+      "cpu_binding": 0,
+      "cpu_load": {
+        "set": true,
+        "infinite": false,
+        "number": 920
+      },
+      "free_mem": {
+        "set": true,
+        "infinite": false,
+        "number": 59772
+      },
+      "cpus": 40,
+      "effective_cpus": 40,
+      "specialized_cpus": "",
+      "energy": {
+        "average_watts": 0,
+        "base_consumed_energy": 0,
+        "consumed_energy": 0,
+        "current_watts": 0,
+        "previous_consumed_energy": 0,
+        "last_collected": 0
+      },
+      "external_sensors": {
+        "consumed_energy": {
+          "set": false,
+          "infinite": false,
+          "number": 0
+        },
+        "temperature": {
+          "set": false,
+          "infinite": false,
+          "number": 0
+        },
+        "energy_update_time": 0,
+        "current_watts": 0
+      },
+      "extra": "",
+      "power": {
+        "maximum_watts": {
+          "set": false,
+          "infinite": false,
+          "number": 0
+        },
+        "current_watts": 0,
+        "total_energy": 0,
+        "new_maximum_watts": 0,
+        "peak_watts": 0,
+        "lowest_watts": 0,
+        "new_job_time": 0,
+        "state": 0,
+        "time_start_day": 0
+      },
+      "features": [
+      ],
+      "active_features": [
+      ],
+      "gres": "gpu:nvidia_rtx_a6000:8",
+      "gres_drained": "N\/A",
+      "gres_used": "gpu:nvidia_rtx_a6000:7(IDX:0-5,7)",
+      "last_busy": 1793348306,
+      "mcs_label": "",
+      "specialized_memory": 0,
+      "name": "node07",
+      "next_state_after_reboot": [
+        "INVALID",
+        "PERFCTRS",
+        "RESERVED",
+        "UNDRAIN",
+        "CLOUD",
+        "RESUME",
+        "DRAIN",
+        "COMPLETING",
+        "NOT_RESPONDING",
+        "POWERED_DOWN",
+        "FAIL",
+        "POWERING_UP",
+        "MAINTENANCE",
+        "REBOOT_REQUESTED",
+        "REBOOT_CANCELED",
+        "POWERING_DOWN",
+        "DYNAMIC_FUTURE",
+        "REBOOT_ISSUED",
+        "PLANNED",
+        "INVALID_REG",
+        "POWER_DOWN",
+        "POWER_UP",
+        "POWER_DRAIN",
+        "DYNAMIC_NORM"
+      ],
+      "address": "node07",
+      "hostname": "node07",
+      "state": [
+        "ALLOCATED"
+      ],
+      "operating_system": "Linux 5.15.0-88-generic #98-Ubuntu SMP Mon Oct 2 15:18:56 UTC 2023",
+      "owner": "",
+      "partitions": [
+        "compute"
+      ],
+      "port": 6818,
+      "real_memory": 386822,
+      "comment": "",
+      "reason": "",
+      "reason_changed_at": 0,
+      "reason_set_by_user": "",
+      "resume_after": {
+        "set": true,
+        "infinite": false,
+        "number": 0
+      },
+      "reservation": "",
+      "alloc_memory": 327936,
+      "alloc_cpus": 36,
+      "alloc_idle_cpus": 4,
+      "tres_used": "cpu=36,mem=327936M,gres\/gpu=7,gres\/gpu:nvidia_rtx_a6000=7",
+      "tres_weighted": 36.0,
+      "slurmd_start_time": 1791867331,
+      "sockets": 2,
+      "threads": 2,
+      "temporary_disk": 0,
+      "weight": 1,
+      "tres": "cpu=40,mem=386822M,billing=40,gres\/gpu=8,gres\/gpu:nvidia_rtx_a6000=8",
+      "version": "23.02.3"
+    },
+    {
+      "architecture": "x86_64",
+      "burstbuffer_network_address": "",
+      "boards": 1,
+      "boot_time": 1793266682,
+      "cluster_name": "",
+      "cores": 12,
+      "specialized_cores": 0,
+      "cpu_binding": 0,
+      "cpu_load": {
+        "set": true,
+        "infinite": false,
+        "number": 377
+      },
+      "free_mem": {
+        "set": true,
+        "infinite": false,
+        "number": 140827
+      },
+      "cpus": 48,
+      "effective_cpus": 48,
+      "specialized_cpus": "",
+      "energy": {
+        "average_watts": 0,
+        "base_consumed_energy": 0,
+        "consumed_energy": 0,
+        "current_watts": 0,
+        "previous_consumed_energy": 0,
+        "last_collected": 0
+      },
+      "external_sensors": {
+        "consumed_energy": {
+          "set": false,
+          "infinite": false,
+          "number": 0
+        },
+        "temperature": {
+          "set": false,
+          "infinite": false,
+          "number": 0
+        },
+        "energy_update_time": 0,
+        "current_watts": 0
+      },
+      "extra": "",
+      "power": {
+        "maximum_watts": {
+          "set": false,
+          "infinite": false,
+          "number": 0
+        },
+        "current_watts": 0,
+        "total_energy": 0,
+        "new_maximum_watts": 0,
+        "peak_watts": 0,
+        "lowest_watts": 0,
+        "new_job_time": 0,
+        "state": 0,
+        "time_start_day": 0
+      },
+      "features": [
+      ],
+      "active_features": [
+      ],
+      "gres": "gpu:a100-pcie-40gb:4",
+      "gres_drained": "N\/A",
+      "gres_used": "gpu:a100-pcie-40gb:4(IDX:0-3)",
+      "last_busy": 1793266916,
+      "mcs_label": "",
+      "specialized_memory": 0,
+      "name": "node09",
+      "next_state_after_reboot": [
+        "INVALID",
+        "PERFCTRS",
+        "RESERVED",
+        "UNDRAIN",
+        "CLOUD",
+        "RESUME",
+        "DRAIN",
+        "COMPLETING",
+        "NOT_RESPONDING",
+        "POWERED_DOWN",
+        "FAIL",
+        "POWERING_UP",
+        "MAINTENANCE",
+        "REBOOT_REQUESTED",
+        "REBOOT_CANCELED",
+        "POWERING_DOWN",
+        "DYNAMIC_FUTURE",
+        "REBOOT_ISSUED",
+        "PLANNED",
+        "INVALID_REG",
+        "POWER_DOWN",
+        "POWER_UP",
+        "POWER_DRAIN",
+        "DYNAMIC_NORM"
+      ],
+      "address": "node09",
+      "hostname": "node09",
+      "state": [
+        "ALLOCATED"
+      ],
+      "operating_system": "Linux 5.15.0-88-generic #98-Ubuntu SMP Mon Oct 2 15:18:56 UTC 2023",
+      "owner": "",
+      "partitions": [
+        "compute"
+      ],
+      "port": 6818,
+      "real_memory": 190000,
+      "comment": "",
+      "reason": "",
+      "reason_changed_at": 0,
+      "reason_set_by_user": "",
+      "resume_after": {
+        "set": true,
+        "infinite": false,
+        "number": 0
+      },
+      "reservation": "",
+      "alloc_memory": 172032,
+      "alloc_cpus": 20,
+      "alloc_idle_cpus": 28,
+      "tres_used": "cpu=20,mem=168G,gres\/gpu=4,gres\/gpu:a100-pcie-40gb=4",
+      "tres_weighted": 20.0,
+      "slurmd_start_time": 1793266841,
+      "sockets": 2,
+      "threads": 2,
+      "temporary_disk": 0,
+      "weight": 1,
+      "tres": "cpu=48,mem=190000M,billing=48,gres\/gpu=4,gres\/gpu:a100-pcie-40gb=4",
+      "version": "23.02.3"
+    },
+    {
+      "architecture": "x86_64",
+      "burstbuffer_network_address": "",
+      "boards": 1,
+      "boot_time": 1788361462,
+      "cluster_name": "",
+      "cores": 12,
+      "specialized_cores": 0,
+      "cpu_binding": 0,
+      "cpu_load": {
+        "set": true,
+        "infinite": false,
+        "number": 789
+      },
+      "free_mem": {
+        "set": true,
+        "infinite": false,
+        "number": 75347
+      },
+      "cpus": 48,
+      "effective_cpus": 48,
+      "specialized_cpus": "",
+      "energy": {
+        "average_watts": 0,
+        "base_consumed_energy": 0,
+        "consumed_energy": 0,
+        "current_watts": 0,
+        "previous_consumed_energy": 0,
+        "last_collected": 0
+      },
+      "external_sensors": {
+        "consumed_energy": {
+          "set": false,
+          "infinite": false,
+          "number": 0
+        },
+        "temperature": {
+          "set": false,
+          "infinite": false,
+          "number": 0
+        },
+        "energy_update_time": 0,
+        "current_watts": 0
+      },
+      "extra": "",
+      "power": {
+        "maximum_watts": {
+          "set": false,
+          "infinite": false,
+          "number": 0
+        },
+        "current_watts": 0,
+        "total_energy": 0,
+        "new_maximum_watts": 0,
+        "peak_watts": 0,
+        "lowest_watts": 0,
+        "new_job_time": 0,
+        "state": 0,
+        "time_start_day": 0
+      },
+      "features": [
+      ],
+      "active_features": [
+      ],
+      "gres": "gpu:tesla_v100-sxm2-16gb:8(S:0-1)",
+      "gres_drained": "N\/A",
+      "gres_used": "gpu:tesla_v100-sxm2-16gb:7(IDX:0-2,4-7)",
+      "last_busy": 1793377566,
+      "mcs_label": "",
+      "specialized_memory": 0,
+      "name": "node10",
+      "next_state_after_reboot": [
+        "INVALID",
+        "PERFCTRS",
+        "RESERVED",
+        "UNDRAIN",
+        "CLOUD",
+        "RESUME",
+        "DRAIN",
+        "COMPLETING",
+        "NOT_RESPONDING",
+        "POWERED_DOWN",
+        "FAIL",
+        "POWERING_UP",
+        "MAINTENANCE",
+        "REBOOT_REQUESTED",
+        "REBOOT_CANCELED",
+        "POWERING_DOWN",
+        "DYNAMIC_FUTURE",
+        "REBOOT_ISSUED",
+        "PLANNED",
+        "INVALID_REG",
+        "POWER_DOWN",
+        "POWER_UP",
+        "POWER_DRAIN",
+        "DYNAMIC_NORM"
+      ],
+      "address": "node10",
+      "hostname": "node10",
+      "state": [
+        "ALLOCATED"
+      ],
+      "operating_system": "Linux 5.15.0-88-generic #98-Ubuntu SMP Mon Oct 2 15:18:56 UTC 2023",
+      "owner": "",
+      "partitions": [
+        "compute"
+      ],
+      "port": 6818,
+      "real_memory": 125000,
+      "comment": "",
+      "reason": "",
+      "reason_changed_at": 0,
+      "reason_set_by_user": "",
+      "resume_after": {
+        "set": true,
+        "infinite": false,
+        "number": 0
+      },
+      "reservation": "",
+      "alloc_memory": 94208,
+      "alloc_cpus": 24,
+      "alloc_idle_cpus": 24,
+      "tres_used": "cpu=24,mem=92G,gres\/gpu=7,gres\/gpu:tesla_v100-sxm2-16gb=7",
+      "tres_weighted": 24.0,
+      "slurmd_start_time": 1793377519,
+      "sockets": 2,
+      "threads": 2,
+      "temporary_disk": 0,
+      "weight": 1,
+      "tres": "cpu=48,mem=125000M,billing=48,gres\/gpu=8,gres\/gpu:tesla_v100-sxm2-16gb=8",
+      "version": "23.02.3"
+    },
+    {
+      "architecture": "x86_64",
+      "burstbuffer_network_address": "",
+      "boards": 1,
+      "boot_time": 1789494271,
+      "cluster_name": "",
+      "cores": 12,
+      "specialized_cores": 0,
+      "cpu_binding": 0,
+      "cpu_load": {
+        "set": true,
+        "infinite": false,
+        "number": 31
+      },
+      "free_mem": {
+        "set": true,
+        "infinite": false,
+        "number": 27100
+      },
+      "cpus": 48,
+      "effective_cpus": 48,
+      "specialized_cpus": "",
+      "energy": {
+        "average_watts": 0,
+        "base_consumed_energy": 0,
+        "consumed_energy": 0,
+        "current_watts": 0,
+        "previous_consumed_energy": 0,
+        "last_collected": 0
+      },
+      "external_sensors": {
+        "consumed_energy": {
+          "set": false,
+          "infinite": false,
+          "number": 0
+        },
+        "temperature": {
+          "set": false,
+          "infinite": false,
+          "number": 0
+        },
+        "energy_update_time": 0,
+        "current_watts": 0
+      },
+      "extra": "",
+      "power": {
+        "maximum_watts": {
+          "set": false,
+          "infinite": false,
+          "number": 0
+        },
+        "current_watts": 0,
+        "total_energy": 0,
+        "new_maximum_watts": 0,
+        "peak_watts": 0,
+        "lowest_watts": 0,
+        "new_job_time": 0,
+        "state": 0,
+        "time_start_day": 0
+      },
+      "features": [
+      ],
+      "active_features": [
+      ],
+      "gres": "gpu:tesla_v100-sxm2-16gb:8(S:0-1)",
+      "gres_drained": "N\/A",
+      "gres_used": "gpu:tesla_v100-sxm2-16gb:0(IDX:N\/A)",
+      "last_busy": 1793327224,
+      "mcs_label": "",
+      "specialized_memory": 0,
+      "name": "node11",
+      "next_state_after_reboot": [
+        "INVALID",
+        "PERFCTRS",
+        "RESERVED",
+        "UNDRAIN",
+        "CLOUD",
+        "RESUME",
+        "DRAIN",
+        "COMPLETING",
+        "NOT_RESPONDING",
+        "POWERED_DOWN",
+        "FAIL",
+        "POWERING_UP",
+        "MAINTENANCE",
+        "REBOOT_REQUESTED",
+        "REBOOT_CANCELED",
+        "POWERING_DOWN",
+        "DYNAMIC_FUTURE",
+        "REBOOT_ISSUED",
+        "PLANNED",
+        "INVALID_REG",
+        "POWER_DOWN",
+        "POWER_UP",
+        "POWER_DRAIN",
+        "DYNAMIC_NORM"
+      ],
+      "address": "node11",
+      "hostname": "node11",
+      "state": [
+        "ALLOCATED"
+      ],
+      "operating_system": "Linux 5.15.0-88-generic #98-Ubuntu SMP Mon Oct 2 15:18:56 UTC 2023",
+      "owner": "",
+      "partitions": [
+        "compute"
+      ],
+      "port": 6818,
+      "real_memory": 125000,
+      "comment": "",
+      "reason": "",
+      "reason_changed_at": 0,
+      "reason_set_by_user": "",
+      "resume_after": {
+        "set": true,
+        "infinite": false,
+        "number": 0
+      },
+      "reservation": "",
+      "alloc_memory": 65536,
+      "alloc_cpus": 32,
+      "alloc_idle_cpus": 16,
+      "tres_used": "cpu=32,mem=64G",
+      "tres_weighted": 32.0,
+      "slurmd_start_time": 1789494017,
+      "sockets": 2,
+      "threads": 2,
+      "temporary_disk": 0,
+      "weight": 1,
+      "tres": "cpu=48,mem=125000M,billing=48,gres\/gpu=8,gres\/gpu:tesla_v100-sxm2-16gb=8",
+      "version": "23.02.3"
+    },
+    {
+      "architecture": "x86_64",
+      "burstbuffer_network_address": "",
+      "boards": 1,
+      "boot_time": 1792378031,
+      "cluster_name": "",
+      "cores": 12,
+      "specialized_cores": 0,
+      "cpu_binding": 0,
+      "cpu_load": {
+        "set": true,
+        "infinite": false,
+        "number": 26
+      },
+      "free_mem": {
+        "set": true,
+        "infinite": false,
+        "number": 78557
+      },
+      "cpus": 48,
+      "effective_cpus": 48,
+      "specialized_cpus": "",
+      "energy": {
+        "average_watts": 0,
+        "base_consumed_energy": 0,
+        "consumed_energy": 0,
+        "current_watts": 0,
+        "previous_consumed_energy": 0,
+        "last_collected": 0
+      },
+      "external_sensors": {
+        "consumed_energy": {
+          "set": false,
+          "infinite": false,
+          "number": 0
+        },
+        "temperature": {
+          "set": false,
+          "infinite": false,
+          "number": 0
+        },
+        "energy_update_time": 0,
+        "current_watts": 0
+      },
+      "extra": "",
+      "power": {
+        "maximum_watts": {
+          "set": false,
+          "infinite": false,
+          "number": 0
+        },
+        "current_watts": 0,
+        "total_energy": 0,
+        "new_maximum_watts": 0,
+        "peak_watts": 0,
+        "lowest_watts": 0,
+        "new_job_time": 0,
+        "state": 0,
+        "time_start_day": 0
+      },
+      "features": [
+      ],
+      "active_features": [
+      ],
+      "gres": "gpu:tesla_v100-sxm2-16gb:8(S:0-1)",
+      "gres_drained": "N\/A",
+      "gres_used": "gpu:tesla_v100-sxm2-16gb:1(IDX:4)",
+      "last_busy": 1793076263,
+      "mcs_label": "",
+      "specialized_memory": 0,
+      "name": "node12",
+      "next_state_after_reboot": [
+        "INVALID",
+        "PERFCTRS",
+        "RESERVED",
+        "UNDRAIN",
+        "CLOUD",
+        "RESUME",
+        "DRAIN",
+        "COMPLETING",
+        "NOT_RESPONDING",
+        "POWERED_DOWN",
+        "FAIL",
+        "POWERING_UP",
+        "MAINTENANCE",
+        "REBOOT_REQUESTED",
+        "REBOOT_CANCELED",
+        "POWERING_DOWN",
+        "DYNAMIC_FUTURE",
+        "REBOOT_ISSUED",
+        "PLANNED",
+        "INVALID_REG",
+        "POWER_DOWN",
+        "POWER_UP",
+        "POWER_DRAIN",
+        "DYNAMIC_NORM"
+      ],
+      "address": "node12",
+      "hostname": "node12",
+      "state": [
+        "ALLOCATED"
+      ],
+      "operating_system": "Linux 5.15.0-88-generic #98-Ubuntu SMP Mon Oct 2 15:18:56 UTC 2023",
+      "owner": "",
+      "partitions": [
+        "compute"
+      ],
+      "port": 6818,
+      "real_memory": 125000,
+      "comment": "",
+      "reason": "",
+      "reason_changed_at": 0,
+      "reason_set_by_user": "",
+      "resume_after": {
+        "set": true,
+        "infinite": false,
+        "number": 0
+      },
+      "reservation": "",
+      "alloc_memory": 65536,
+      "alloc_cpus": 8,
+      "alloc_idle_cpus": 40,
+      "tres_used": "cpu=8,mem=64G,gres\/gpu=1,gres\/gpu:tesla_v100-sxm2-16gb=1",
+      "tres_weighted": 8.0,
+      "slurmd_start_time": 1792378064,
+      "sockets": 2,
+      "threads": 2,
+      "temporary_disk": 0,
+      "weight": 1,
+      "tres": "cpu=48,mem=125000M,billing=48,gres\/gpu=8,gres\/gpu:tesla_v100-sxm2-16gb=8",
+      "version": "23.02.3"
+    },
+    {
+      "architecture": "x86_64",
+      "burstbuffer_network_address": "",
+      "boards": 1,
+      "boot_time": 1785492517,
+      "cluster_name": "",
+      "cores": 10,
+      "specialized_cores": 0,
+      "cpu_binding": 0,
+      "cpu_load": {
+        "set": true,
+        "infinite": false,
+        "number": 315
+      },
+      "free_mem": {
+        "set": true,
+        "infinite": false,
+        "number": 29633
+      },
+      "cpus": 40,
+      "effective_cpus": 40,
+      "specialized_cpus": "",
+      "energy": {
+        "average_watts": 0,
+        "base_consumed_energy": 0,
+        "consumed_energy": 0,
+        "current_watts": 0,
+        "previous_consumed_energy": 0,
+        "last_collected": 0
+      },
+      "external_sensors": {
+        "consumed_energy": {
+          "set": false,
+          "infinite": false,
+          "number": 0
+        },
+        "temperature": {
+          "set": false,
+          "infinite": false,
+          "number": 0
+        },
+        "energy_update_time": 0,
+        "current_watts": 0
+      },
+      "extra": "",
+      "power": {
+        "maximum_watts": {
+          "set": false,
+          "infinite": false,
+          "number": 0
+        },
+        "current_watts": 0,
+        "total_energy": 0,
+        "new_maximum_watts": 0,
+        "peak_watts": 0,
+        "lowest_watts": 0,
+        "new_job_time": 0,
+        "state": 0,
+        "time_start_day": 0
+      },
+      "features": [
+      ],
+      "active_features": [
+      ],
+      "gres": "gpu:tesla_v100s-pcie-32gb:3(S:0),gpu:tesla_v100-sxm2-32gb:2(S:1)",
+      "gres_drained": "N\/A",
+      "gres_used": "gpu:tesla_v100s-pcie-32gb:1(IDX:0),gpu:tesla_v100-sxm2-32gb:2(IDX:3-4)",
+      "last_busy": 1792156999,
+      "mcs_label": "",
+      "specialized_memory": 0,
+      "name": "node13",
+      "next_state_after_reboot": [
+        "INVALID",
+        "PERFCTRS",
+        "RESERVED",
+        "UNDRAIN",
+        "CLOUD",
+        "RESUME",
+        "DRAIN",
+        "COMPLETING",
+        "NOT_RESPONDING",
+        "POWERED_DOWN",
+        "FAIL",
+        "POWERING_UP",
+        "MAINTENANCE",
+        "REBOOT_REQUESTED",
+        "REBOOT_CANCELED",
+        "POWERING_DOWN",
+        "DYNAMIC_FUTURE",
+        "REBOOT_ISSUED",
+        "PLANNED",
+        "INVALID_REG",
+        "POWER_DOWN",
+        "POWER_UP",
+        "POWER_DRAIN",
+        "DYNAMIC_NORM"
+      ],
+      "address": "node13",
+      "hostname": "node13",
+      "state": [
+        "ALLOCATED"
+      ],
+      "operating_system": "Linux 5.15.0-88-generic #98-Ubuntu SMP Mon Oct 2 15:18:56 UTC 2023",
+      "owner": "",
+      "partitions": [
+        "compute"
+      ],
+      "port": 6818,
+      "real_memory": 125000,
+      "comment": "",
+      "reason": "",
+      "reason_changed_at": 0,
+      "reason_set_by_user": "",
+      "resume_after": {
+        "set": true,
+        "infinite": false,
+        "number": 0
+      },
+      "reservation": "",
+      "alloc_memory": 49152,
+      "alloc_cpus": 12,
+      "alloc_idle_cpus": 28,
+      "tres_used": "cpu=12,mem=48G,gres\/gpu=3,gres\/gpu:tesla_v100-sxm2-32gb=2,gres\/gpu:tesla_v100s-pcie-32gb=1",
+      "tres_weighted": 12.0,
+      "slurmd_start_time": 1785492240,
+      "sockets": 2,
+      "threads": 2,
+      "temporary_disk": 0,
+      "weight": 1,
+      "tres": "cpu=40,mem=125000M,billing=40,gres\/gpu=5,gres\/gpu:tesla_v100-sxm2-32gb=2,gres\/gpu:tesla_v100s-pcie-32gb=3",
+      "version": "23.02.3"
+    },
+    {
+      "architecture": "",
+      "burstbuffer_network_address": "",
+      "boards": 1,
+      "boot_time": 0,
+      "cluster_name": "",
+      "cores": 12,
+      "specialized_cores": 0,
+      "cpu_binding": 0,
+      "cpu_load": {
+        "set": false,
+        "infinite": false,
+        "number": 0
+      },
+      "free_mem": {
+        "set": false,
+        "infinite": false,
+        "number": 0
+      },
+      "cpus": 48,
+      "effective_cpus": 48,
+      "specialized_cpus": "",
+      "energy": {
+        "average_watts": 0,
+        "base_consumed_energy": 0,
+        "consumed_energy": 0,
+        "current_watts": 0,
+        "previous_consumed_energy": 0,
+        "last_collected": 0
+      },
+      "external_sensors": {
+        "consumed_energy": {
+          "set": false,
+          "infinite": false,
+          "number": 0
+        },
+        "temperature": {
+          "set": false,
+          "infinite": false,
+          "number": 0
+        },
+        "energy_update_time": 0,
+        "current_watts": 0
+      },
+      "extra": "",
+      "power": {
+        "maximum_watts": {
+          "set": false,
+          "infinite": false,
+          "number": 0
+        },
+        "current_watts": 0,
+        "total_energy": 0,
+        "new_maximum_watts": 0,
+        "peak_watts": 0,
+        "lowest_watts": 0,
+        "new_job_time": 0,
+        "state": 0,
+        "time_start_day": 0
+      },
+      "features": [
+      ],
+      "active_features": [
+      ],
+      "gres": "gpu:a100-pcie-40gb:8(S:0-1)",
+      "gres_drained": "N\/A",
+      "gres_used": "gpu:a100-pcie-40gb:0(IDX:N\/A)",
+      "last_busy": 1791793639,
+      "mcs_label": "",
+      "specialized_memory": 0,
+      "name": "node15",
+      "next_state_after_reboot": [
+        "INVALID",
+        "PERFCTRS",
+        "RESERVED",
+        "UNDRAIN",
+        "CLOUD",
+        "RESUME",
+        "DRAIN",
+        "COMPLETING",
+        "NOT_RESPONDING",
+        "POWERED_DOWN",
+        "FAIL",
+        "POWERING_UP",
+        "MAINTENANCE",
+        "REBOOT_REQUESTED",
+        "REBOOT_CANCELED",
+        "POWERING_DOWN",
+        "DYNAMIC_FUTURE",
+        "REBOOT_ISSUED",
+        "PLANNED",
+        "INVALID_REG",
+        "POWER_DOWN",
+        "POWER_UP",
+        "POWER_DRAIN",
+        "DYNAMIC_NORM"
+      ],
+      "address": "node15",
+      "hostname": "node15",
+      "state": [
+        "DOWN",
+        "DRAIN",
+        "NOT_RESPONDING"
+      ],
+      "operating_system": "",
+      "owner": "",
+      "partitions": [
+        "compute"
+      ],
+      "port": 6818,
+      "real_memory": 515624,
+      "comment": "",
+      "reason": "in use",
+      "reason_changed_at": 1784081553,
+      "reason_set_by_user": "root",
+      "resume_after": {
+        "set": true,
+        "infinite": false,
+        "number": 0
+      },
+      "reservation": "",
+      "alloc_memory": 0,
+      "alloc_cpus": 0,
+      "alloc_idle_cpus": 48,
+      "tres_used": "",
+      "tres_weighted": 0.0,
+      "slurmd_start_time": 0,
+      "sockets": 2,
+      "threads": 2,
+      "temporary_disk": 0,
+      "weight": 1,
+      "tres": "cpu=48,mem=515624M,billing=48,gres\/gpu=8,gres\/gpu:a100-pcie-40gb=8",
+      "version": ""
+    },
+    {
+      "architecture": "x86_64",
+      "burstbuffer_network_address": "",
+      "boards": 1,
+      "boot_time": 1789492580,
+      "cluster_name": "",
+      "cores": 12,
+      "specialized_cores": 0,
+      "cpu_binding": 0,
+      "cpu_load": {
+        "set": true,
+        "infinite": false,
+        "number": 964
+      },
+      "free_mem": {
+        "set": true,
+        "infinite": false,
+        "number": 195051
+      },
+      "cpus": 48,
+      "effective_cpus": 48,
+      "specialized_cpus": "",
+      "energy": {
+        "average_watts": 0,
+        "base_consumed_energy": 0,
+        "consumed_energy": 0,
+        "current_watts": 0,
+        "previous_consumed_energy": 0,
+        "last_collected": 0
+      },
+      "external_sensors": {
+        "consumed_energy": {
+          "set": false,
+          "infinite": false,
+          "number": 0
+        },
+        "temperature": {
+          "set": false,
+          "infinite": false,
+          "number": 0
+        },
+        "energy_update_time": 0,
+        "current_watts": 0
+      },
+      "extra": "",
+      "power": {
+        "maximum_watts": {
+          "set": false,
+          "infinite": false,
+          "number": 0
+        },
+        "current_watts": 0,
+        "total_energy": 0,
+        "new_maximum_watts": 0,
+        "peak_watts": 0,
+        "lowest_watts": 0,
+        "new_job_time": 0,
+        "state": 0,
+        "time_start_day": 0
+      },
+      "features": [
+      ],
+      "active_features": [
+      ],
+      "gres": "gpu:a100-pcie-40gb:8(S:0-1)",
+      "gres_drained": "N\/A",
+      "gres_used": "gpu:a100-pcie-40gb:7(IDX:0-6)",
+      "last_busy": 1791793639,
+      "mcs_label": "",
+      "specialized_memory": 0,
+      "name": "node16",
+      "next_state_after_reboot": [
+        "INVALID",
+        "PERFCTRS",
+        "RESERVED",
+        "UNDRAIN",
+        "CLOUD",
+        "RESUME",
+        "DRAIN",
+        "COMPLETING",
+        "NOT_RESPONDING",
+        "POWERED_DOWN",
+        "FAIL",
+        "POWERING_UP",
+        "MAINTENANCE",
+        "REBOOT_REQUESTED",
+        "REBOOT_CANCELED",
+        "POWERING_DOWN",
+        "DYNAMIC_FUTURE",
+        "REBOOT_ISSUED",
+        "PLANNED",
+        "INVALID_REG",
+        "POWER_DOWN",
+        "POWER_UP",
+        "POWER_DRAIN",
+        "DYNAMIC_NORM"
+      ],
+      "address": "node16",
+      "hostname": "node16",
+      "state": [
+        "ALLOCATED"
+      ],
+      "operating_system": "Linux 5.15.0-88-generic #98-Ubuntu SMP Mon Oct 2 15:18:56 UTC 2023",
+      "owner": "",
+      "partitions": [
+        "compute"
+      ],
+      "port": 6818,
+      "real_memory": 700000,
+      "comment": "",
+      "reason": "",
+      "reason_changed_at": 0,
+      "reason_set_by_user": "",
+      "resume_after": {
+        "set": true,
+        "infinite": false,
+        "number": 0
+      },
+      "reservation": "",
+      "alloc_memory": 320512,
+      "alloc_cpus": 26,
+      "alloc_idle_cpus": 22,
+      "tres_used": "cpu=26,mem=313G,gres\/gpu=7,gres\/gpu:a100-pcie-40gb=7",
+      "tres_weighted": 26.0,
+      "slurmd_start_time": 1789492723,
+      "sockets": 2,
+      "threads": 2,
+      "temporary_disk": 0,
+      "weight": 1,
+      "tres": "cpu=48,mem=700000M,billing=48,gres\/gpu=8,gres\/gpu:a100-pcie-40gb=8",
+      "version": "23.02.3"
+    },
+    {
+      "architecture": "x86_64",
+      "burstbuffer_network_address": "",
+      "boards": 1,
+      "boot_time": 1789492363,
+      "cluster_name": "",
+      "cores": 12,
+      "specialized_cores": 0,
+      "cpu_binding": 0,
+      "cpu_load": {
+        "set": true,
+        "infinite": false,
+        "number": 0
+      },
+      "free_mem": {
+        "set": true,
+        "infinite": false,
+        "number": 587302
+      },
+      "cpus": 48,
+      "effective_cpus": 48,
+      "specialized_cpus": "",
+      "energy": {
+        "average_watts": 0,
+        "base_consumed_energy": 0,
+        "consumed_energy": 0,
+        "current_watts": 0,
+        "previous_consumed_energy": 0,
+        "last_collected": 0
+      },
+      "external_sensors": {
+        "consumed_energy": {
+          "set": false,
+          "infinite": false,
+          "number": 0
+        },
+        "temperature": {
+          "set": false,
+          "infinite": false,
+          "number": 0
+        },
+        "energy_update_time": 0,
+        "current_watts": 0
+      },
+      "extra": "",
+      "power": {
+        "maximum_watts": {
+          "set": false,
+          "infinite": false,
+          "number": 0
+        },
+        "current_watts": 0,
+        "total_energy": 0,
+        "new_maximum_watts": 0,
+        "peak_watts": 0,
+        "lowest_watts": 0,
+        "new_job_time": 0,
+        "state": 0,
+        "time_start_day": 0
+      },
+      "features": [
+      ],
+      "active_features": [
+      ],
+      "gres": "gpu:nvidia_a100_80gb_pcie:8(S:0)",
+      "gres_drained": "N\/A",
+      "gres_used": "gpu:nvidia_a100_80gb_pcie:0(IDX:N\/A)",
+      "last_busy": 1791793643,
+      "mcs_label": "",
+      "specialized_memory": 0,
+      "name": "node18",
+      "next_state_after_reboot": [
+        "INVALID",
+        "PERFCTRS",
+        "RESERVED",
+        "UNDRAIN",
+        "CLOUD",
+        "RESUME",
+        "DRAIN",
+        "COMPLETING",
+        "NOT_RESPONDING",
+        "POWERED_DOWN",
+        "FAIL",
+        "POWERING_UP",
+        "MAINTENANCE",
+        "REBOOT_REQUESTED",
+        "REBOOT_CANCELED",
+        "POWERING_DOWN",
+        "DYNAMIC_FUTURE",
+        "REBOOT_ISSUED",
+        "PLANNED",
+        "INVALID_REG",
+        "POWER_DOWN",
+        "POWER_UP",
+        "POWER_DRAIN",
+        "DYNAMIC_NORM"
+      ],
+      "address": "node18",
+      "hostname": "node18",
+      "state": [
+        "IDLE",
+        "DRAIN"
+      ],
+      "operating_system": "Linux 5.15.0-88-generic #98-Ubuntu SMP Mon Oct 2 15:18:56 UTC 2023",
+      "owner": "",
+      "partitions": [
+        "compute"
+      ],
+      "port": 6818,
+      "real_memory": 644655,
+      "comment": "",
+      "reason": "project_occupied",
+      "reason_changed_at": 1790579248,
+      "reason_set_by_user": "root",
+      "resume_after": {
+        "set": true,
+        "infinite": false,
+        "number": 0
+      },
+      "reservation": "",
+      "alloc_memory": 0,
+      "alloc_cpus": 0,
+      "alloc_idle_cpus": 48,
+      "tres_used": "",
+      "tres_weighted": 0.0,
+      "slurmd_start_time": 1789492727,
+      "sockets": 2,
+      "threads": 2,
+      "temporary_disk": 0,
+      "weight": 1,
+      "tres": "cpu=48,mem=644655M,billing=48,gres\/gpu=8,gres\/gpu:nvidia_a100_80gb_pcie=8",
+      "version": "23.02.3"
+    },
+    {
+      "architecture": "x86_64",
+      "burstbuffer_network_address": "",
+      "boards": 1,
+      "boot_time": 1789494604,
+      "cluster_name": "",
+      "cores": 32,
+      "specialized_cores": 0,
+      "cpu_binding": 0,
+      "cpu_load": {
+        "set": true,
+        "infinite": false,
+        "number": 511
+      },
+      "free_mem": {
+        "set": true,
+        "infinite": false,
+        "number": 192139
+      },
+      "cpus": 128,
+      "effective_cpus": 128,
+      "specialized_cpus": "",
+      "energy": {
+        "average_watts": 0,
+        "base_consumed_energy": 0,
+        "consumed_energy": 0,
+        "current_watts": 0,
+        "previous_consumed_energy": 0,
+        "last_collected": 0
+      },
+      "external_sensors": {
+        "consumed_energy": {
+          "set": false,
+          "infinite": false,
+          "number": 0
+        },
+        "temperature": {
+          "set": false,
+          "infinite": false,
+          "number": 0
+        },
+        "energy_update_time": 0,
+        "current_watts": 0
+      },
+      "extra": "",
+      "power": {
+        "maximum_watts": {
+          "set": false,
+          "infinite": false,
+          "number": 0
+        },
+        "current_watts": 0,
+        "total_energy": 0,
+        "new_maximum_watts": 0,
+        "peak_watts": 0,
+        "lowest_watts": 0,
+        "new_job_time": 0,
+        "state": 0,
+        "time_start_day": 0
+      },
+      "features": [
+      ],
+      "active_features": [
+      ],
+      "gres": "gpu:a100-sxm4-80gb:7(S:0-1)",
+      "gres_drained": "N\/A",
+      "gres_used": "gpu:a100-sxm4-80gb:7(IDX:0-6)",
+      "last_busy": 1791793639,
+      "mcs_label": "",
+      "specialized_memory": 0,
+      "name": "node19",
+      "next_state_after_reboot": [
+        "INVALID",
+        "PERFCTRS",
+        "RESERVED",
+        "UNDRAIN",
+        "CLOUD",
+        "RESUME",
+        "DRAIN",
+        "COMPLETING",
+        "NOT_RESPONDING",
+        "POWERED_DOWN",
+        "FAIL",
+        "POWERING_UP",
+        "MAINTENANCE",
+        "REBOOT_REQUESTED",
+        "REBOOT_CANCELED",
+        "POWERING_DOWN",
+        "DYNAMIC_FUTURE",
+        "REBOOT_ISSUED",
+        "PLANNED",
+        "INVALID_REG",
+        "POWER_DOWN",
+        "POWER_UP",
+        "POWER_DRAIN",
+        "DYNAMIC_NORM"
+      ],
+      "address": "node19",
+      "hostname": "node19",
+      "state": [
+        "ALLOCATED"
+      ],
+      "operating_system": "Linux 5.15.0-88-generic #98-Ubuntu SMP Mon Oct 2 15:18:56 UTC 2023",
+      "owner": "",
+      "partitions": [
+        "compute"
+      ],
+      "port": 6818,
+      "real_memory": 644600,
+      "comment": "",
+      "reason": "",
+      "reason_changed_at": 0,
+      "reason_set_by_user": "",
+      "resume_after": {
+        "set": true,
+        "infinite": false,
+        "number": 0
+      },
+      "reservation": "",
+      "alloc_memory": 385024,
+      "alloc_cpus": 36,
+      "alloc_idle_cpus": 92,
+      "tres_used": "cpu=36,mem=376G,gres\/gpu=7,gres\/gpu:a100-sxm4-80gb=7",
+      "tres_weighted": 36.0,
+      "slurmd_start_time": 1789494530,
+      "sockets": 2,
+      "threads": 2,
+      "temporary_disk": 0,
+      "weight": 1,
+      "tres": "cpu=128,mem=644600M,billing=128,gres\/gpu=7,gres\/gpu:a100-sxm4-80gb=7",
+      "version": "23.02.3"
+    },
+    {
+      "architecture": "x86_64",
+      "burstbuffer_network_address": "",
+      "boards": 1,
+      "boot_time": 1781760751,
+      "cluster_name": "",
+      "cores": 16,
+      "specialized_cores": 0,
+      "cpu_binding": 0,
+      "cpu_load": {
+        "set": true,
+        "infinite": false,
+        "number": 23
+      },
+      "free_mem": {
+        "set": true,
+        "infinite": false,
+        "number": 52172
+      },
+      "cpus": 64,
+      "effective_cpus": 64,
+      "specialized_cpus": "",
+      "energy": {
+        "average_watts": 0,
+        "base_consumed_energy": 0,
+        "consumed_energy": 0,
+        "current_watts": 0,
+        "previous_consumed_energy": 0,
+        "last_collected": 0
+      },
+      "external_sensors": {
+        "consumed_energy": {
+          "set": false,
+          "infinite": false,
+          "number": 0
+        },
+        "temperature": {
+          "set": false,
+          "infinite": false,
+          "number": 0
+        },
+        "energy_update_time": 0,
+        "current_watts": 0
+      },
+      "extra": "",
+      "power": {
+        "maximum_watts": {
+          "set": false,
+          "infinite": false,
+          "number": 0
+        },
+        "current_watts": 0,
+        "total_energy": 0,
+        "new_maximum_watts": 0,
+        "peak_watts": 0,
+        "lowest_watts": 0,
+        "new_job_time": 0,
+        "state": 0,
+        "time_start_day": 0
+      },
+      "features": [
+      ],
+      "active_features": [
+      ],
+      "gres": "gpu:nvidia_a800_80gb_pcie:2(S:0)",
+      "gres_drained": "N\/A",
+      "gres_used": "gpu:nvidia_a800_80gb_pcie:0(IDX:N\/A)",
+      "last_busy": 1793457103,
+      "mcs_label": "",
+      "specialized_memory": 0,
+      "name": "node20",
+      "next_state_after_reboot": [
+        "INVALID",
+        "PERFCTRS",
+        "RESERVED",
+        "UNDRAIN",
+        "CLOUD",
+        "RESUME",
+        "DRAIN",
+        "COMPLETING",
+        "NOT_RESPONDING",
+        "POWERED_DOWN",
+        "FAIL",
+        "POWERING_UP",
+        "MAINTENANCE",
+        "REBOOT_REQUESTED",
+        "REBOOT_CANCELED",
+        "POWERING_DOWN",
+        "DYNAMIC_FUTURE",
+        "REBOOT_ISSUED",
+        "PLANNED",
+        "INVALID_REG",
+        "POWER_DOWN",
+        "POWER_UP",
+        "POWER_DRAIN",
+        "DYNAMIC_NORM"
+      ],
+      "address": "node20",
+      "hostname": "node20",
+      "state": [
+        "IDLE"
+      ],
+      "operating_system": "Linux 5.15.0-88-generic #98-Ubuntu SMP Mon Oct 2 15:18:56 UTC 2023",
+      "owner": "",
+      "partitions": [
+        "compute"
+      ],
+      "port": 6818,
+      "real_memory": 257568,
+      "comment": "",
+      "reason": "",
+      "reason_changed_at": 0,
+      "reason_set_by_user": "",
+      "resume_after": {
+        "set": true,
+        "infinite": false,
+        "number": 0
+      },
+      "reservation": "",
+      "alloc_memory": 0,
+      "alloc_cpus": 0,
+      "alloc_idle_cpus": 64,
+      "tres_used": "",
+      "tres_weighted": 0.0,
+      "slurmd_start_time": 1781768661,
+      "sockets": 2,
+      "threads": 2,
+      "temporary_disk": 0,
+      "weight": 1,
+      "tres": "cpu=64,mem=257568M,billing=64,gres\/gpu=2,gres\/gpu:nvidia_a800_80gb_pcie=2",
+      "version": "23.02.3"
+    },
+    {
+      "architecture": "x86_64",
+      "burstbuffer_network_address": "",
+      "boards": 1,
+      "boot_time": 1782269778,
+      "cluster_name": "",
+      "cores": 16,
+      "specialized_cores": 0,
+      "cpu_binding": 0,
+      "cpu_load": {
+        "set": true,
+        "infinite": false,
+        "number": 567
+      },
+      "free_mem": {
+        "set": true,
+        "infinite": false,
+        "number": 193380
+      },
+      "cpus": 64,
+      "effective_cpus": 64,
+      "specialized_cpus": "",
+      "energy": {
+        "average_watts": 0,
+        "base_consumed_energy": 0,
+        "consumed_energy": 0,
+        "current_watts": 0,
+        "previous_consumed_energy": 0,
+        "last_collected": 0
+      },
+      "external_sensors": {
+        "consumed_energy": {
+          "set": false,
+          "infinite": false,
+          "number": 0
+        },
+        "temperature": {
+          "set": false,
+          "infinite": false,
+          "number": 0
+        },
+        "energy_update_time": 0,
+        "current_watts": 0
+      },
+      "extra": "",
+      "power": {
+        "maximum_watts": {
+          "set": false,
+          "infinite": false,
+          "number": 0
+        },
+        "current_watts": 0,
+        "total_energy": 0,
+        "new_maximum_watts": 0,
+        "peak_watts": 0,
+        "lowest_watts": 0,
+        "new_job_time": 0,
+        "state": 0,
+        "time_start_day": 0
+      },
+      "features": [
+      ],
+      "active_features": [
+      ],
+      "gres": "gpu:a100-sxm4-80gb:6(S:0-1)",
+      "gres_drained": "N\/A",
+      "gres_used": "gpu:a100-sxm4-80gb:6(IDX:0-5)",
+      "last_busy": 1791793639,
+      "mcs_label": "",
+      "specialized_memory": 0,
+      "name": "node21",
+      "next_state_after_reboot": [
+        "INVALID",
+        "PERFCTRS",
+        "RESERVED",
+        "UNDRAIN",
+        "CLOUD",
+        "RESUME",
+        "DRAIN",
+        "COMPLETING",
+        "NOT_RESPONDING",
+        "POWERED_DOWN",
+        "FAIL",
+        "POWERING_UP",
+        "MAINTENANCE",
+        "REBOOT_REQUESTED",
+        "REBOOT_CANCELED",
+        "POWERING_DOWN",
+        "DYNAMIC_FUTURE",
+        "REBOOT_ISSUED",
+        "PLANNED",
+        "INVALID_REG",
+        "POWER_DOWN",
+        "POWER_UP",
+        "POWER_DRAIN",
+        "DYNAMIC_NORM"
+      ],
+      "address": "node21",
+      "hostname": "node21",
+      "state": [
+        "ALLOCATED"
+      ],
+      "operating_system": "Linux 5.15.0-88-generic #98-Ubuntu SMP Mon Oct 2 15:18:56 UTC 2023",
+      "owner": "",
+      "partitions": [
+        "compute"
+      ],
+      "port": 6818,
+      "real_memory": 515616,
+      "comment": "",
+      "reason": "",
+      "reason_changed_at": 0,
+      "reason_set_by_user": "",
+      "resume_after": {
+        "set": true,
+        "infinite": false,
+        "number": 0
+      },
+      "reservation": "",
+      "alloc_memory": 256000,
+      "alloc_cpus": 44,
+      "alloc_idle_cpus": 20,
+      "tres_used": "cpu=44,mem=250G,gres\/gpu=6,gres\/gpu:a100-sxm4-80gb=6",
+      "tres_weighted": 44.0,
+      "slurmd_start_time": 1782271538,
+      "sockets": 2,
+      "threads": 2,
+      "temporary_disk": 0,
+      "weight": 1,
+      "tres": "cpu=64,mem=515616M,billing=64,gres\/gpu=6,gres\/gpu:a100-sxm4-80gb=6",
+      "version": "23.02.3"
+    }
+  ],
+  "warnings": [
+  ],
+  "errors": [
+  ]
+}
