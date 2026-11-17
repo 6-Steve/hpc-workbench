@@ -77,7 +77,7 @@ describe('启动页 · 队列结论措辞', () => {
   })
 
   it('挂起的作业不算进排队数', () => {
-    // JobHeldUser 是"你手动暂停了"，不是排队（docs/03 §0③，E10）
+    // JobHeldUser 是"你手动暂停了"，不是排队（docs/03 §0③）
     const message = queueMessage([{ state: 'suspended' }])
     expect(message).toBe('1 个作业（0 跑 / 0 排）')
   })

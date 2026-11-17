@@ -1,7 +1,7 @@
 /**
  * 单条 SSH 连接的封装：握手指令、host key 校验、exec 与通道并发控制。
  *
- * 设计要点（docs/02 §1.6、docs/04 §2.1）：
+ * 设计要点：
  * - 一条 TCP 连接上开多个 channel，绝不为每次操作重新握手（握手 3-5 次往返）
  * - 并发 exec 走信号量，默认 5，不超过服务端 MaxSessions
  * - 超时与输出截断在客户端兜住，避免一条烂命令把主进程拖死
@@ -54,7 +54,7 @@ export interface PipeOptions {
 
 export interface PipeResult {
   command: string
-  /** 远端退出码。**必须检查**：本地写得成功、远端解压失败会静默丢数据（docs/04 E3） */
+  /** 远端退出码。**必须检查**：本地写得成功、远端解压失败会静默丢数据 */
   code: number | null
   signal: string | null
   stderr: string
@@ -487,8 +487,8 @@ export class Session {
    *
    * 这是 tar 流式传输的地基：数据不落地，全程只有一条 SSH channel。
    * 三条硬约束：
-   * - 必须走 `pipeline`，靠它传导背压，否则 1 GB 会一次性读进内存（docs/04 E2）
-   * - 远端退出码**必须**检查，本地写完不代表远端解开成功（docs/04 E3）
+   * - 必须走 `pipeline`，靠它传导背压，否则 1 GB 会一次性读进内存
+   * - 远端退出码**必须**检查，本地写完不代表远端解开成功
    * - 远端提前退出时用退出码 + stderr 报错，而不是抛个看不懂的 EPIPE
    */
   async pipe(command: string, source: Readable, options: PipeOptions = {}): Promise<PipeResult> {
@@ -570,7 +570,7 @@ export class Session {
           )
         })
 
-        // 只数不发：数据直接流过，不在内存里攒（docs/04 E2）
+        // 只数不发：数据直接流过，不在内存里攒
         const meter = new Transform({
           // 默认 16 KB 的可写高水位意味着管道里最多只压着 16 KB "在途"数据，
           // 发一块就要等对端 ACK 一块，吞吐被往返时延锁死。给到 256 KB 后
@@ -746,7 +746,7 @@ export class Session {
           )
         }
 
-        // 只数不改：数据原样流过（docs/04 E2）。**不要**在这里调 stream.resume()
+        // 只数不改：数据原样流过。**不要**在这里调 stream.resume()
         const meter = new Transform({
           // 下行同理：16 KB 的可写水位会把"在途"数据压得太少，吞吐被 RTT 卡住
           writableHighWaterMark: options.bufferBytes ?? STREAM_BUFFER_BYTES,
@@ -990,7 +990,7 @@ export class Session {
   /**
    * 开一个交互式 shell（PTY）。
    *
-   * **在登录节点上开**，不是计算节点：集群大多禁了计算节点的直连 SSH（docs/04 §3.1 P3），
+   * **在登录节点上开**，不是计算节点：集群大多禁了计算节点的直连 SSH，
    * 而登录节点本来就允许交互登录，`module load` / `conda activate` / `salloc` 都在那儿用。
    *
    * 几个必须做对的地方：

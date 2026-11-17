@@ -1,7 +1,7 @@
 /**
  * IPC 注册与白名单。
  *
- * 渲染层没有 Node 权限，只能调这里注册过的方法（docs/04 §1.2）。
+ * 渲染层没有 Node 权限，只能调这里注册过的方法。
  * 所有需要碰网络的事情都发生在主进程，参数必须是可结构化克隆的普通对象——
  * 所以 Error 实例在这里先摊平成 PlainError，否则自定义字段（kind/hint/raw）过不了 IPC。
  */
@@ -1485,7 +1485,7 @@ export function registerIpcHandlers(deps: IpcDeps): void {
   /**
    * 开一个交互式终端（登录节点上的 PTY）。
    *
-   * 计算节点大多禁了直连 SSH（docs/04 §3.1 P3），所以终端开在登录节点上——
+   * 计算节点大多禁了直连 SSH，所以终端开在登录节点上——
    * 这也正是 `module load` / `conda activate` / `salloc` 该用的地方。
    */
   ipcMain.handle(
@@ -1661,7 +1661,7 @@ export function registerIpcHandlers(deps: IpcDeps): void {
           } catch (err) {
             const plain = toPlainError(err)
             // ssh2 对 tcpip-forward 失败只会给 "Unable to bind to 127.0.0.1:55555"，
-            // 协议里不带原因（docs/04 E25）。所以趁连接还在，**真去查一次**是谁占着。
+            // 协议里不带原因。所以趁连接还在，**真去查一次**是谁占着。
             //
             // 走到这里说明"换端口也不行"（附近都满了），或者不是绑定问题。
             // 不要 throw：'channel' 类错误被标成 retryable，抛出去会让 pool 重连再试一遍，
@@ -1897,7 +1897,7 @@ export function registerIpcHandlers(deps: IpcDeps): void {
    * 用途：从集群「下载到…」任意位置，省得在应用里一层层导航过去。
    * 这就是"把文件拖到资源管理器"那个需求的可靠替代——
    * 真正的 `startDrag` 要求文件已经在磁盘上，远端文件得先下载完才能拖，
-   * 那个等待期用户是没法接受的（详见 docs/04）。
+   * 那个等待期用户是没法接受的。
    */
   ipcMain.handle('fs:pick-directory', async (event): Promise<{ ok: boolean; path?: string }> => {
     const window = BrowserWindow.fromWebContents(event.sender)
@@ -1949,7 +1949,7 @@ export function registerIpcHandlers(deps: IpcDeps): void {
    *
    * 注意时序：`startDrag` 最好在用户鼠标还按着的时候调用。
    * 文件已缓存时这一步是瞬时的，体验和拖本地文件一样；
-   * 第一次拖需要等下载，用户往往会松手，那就要再拖一次（见 docs/04 的说明）。
+   * 第一次拖需要等下载，用户往往会松手，那就要再拖一次。
    */
   ipcMain.handle('fs:start-drag', (event, localPath: string): { ok: boolean; error?: PlainError } => {
     try {

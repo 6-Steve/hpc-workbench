@@ -133,7 +133,7 @@ export function BootSplash({ onDone, onDiagnose }: BootSplashProps): JSX.Element
    * 启动页永久卡死（详见上面 `bootOnce` 的注释）。
    */
   useEffect(() => {
-    // 旧 preload 兜底：宁可直接放行，也不要卡在启动页上（docs/04 E20）
+    // 旧 preload 兜底：宁可直接放行，也不要卡在启动页上
     if (typeof window.hpc?.bootStatus !== 'function') {
       leave({ ok: false })
       return

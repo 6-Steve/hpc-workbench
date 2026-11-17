@@ -3,7 +3,7 @@
  *
  * 一开始只用到"能力探测缓存"，那份缓存刻意走 FileKVStore（和命令行探针共用同一个文件，
  * 便于两边对照排查）。这里留给后续的设置项、作业历史、传输记录
- * （docs/02 §1.4：用 JSON 不用 SQLite，避免 node-gyp 编译）。
+ * （用 JSON 不用 SQLite，避免 node-gyp 编译）。
  */
 import Store from 'electron-store'
 import type { KVStore } from './kv'

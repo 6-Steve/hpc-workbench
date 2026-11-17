@@ -7,7 +7,7 @@ const stats = (fileCount: number, totalBytes: number, largestFileBytes = totalBy
   largestFileBytes
 })
 
-describe('decideStrategy：按 docs/02 §2.5 的矩阵自上而下', () => {
+describe('decideStrategy：按决策矩阵自上而下', () => {
   it('大量小文件 → tar', () => {
     const decision = decideStrategy(stats(1000, 500 * MB))
     expect(decision.strategy).toBe('tar')

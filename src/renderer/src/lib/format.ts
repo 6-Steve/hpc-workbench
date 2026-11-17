@@ -68,7 +68,7 @@ export function describeResources(
 
 /**
  * 这个模块只关心配额的字节维度，所以自己声明结构子集——
- * 全局的 `Quota` 来自 `src/preload/index.d.ts`，node 侧 tsconfig 看不见它（docs/04 E21）。
+ * 全局的 `Quota` 来自 `src/preload/index.d.ts`，node 侧 tsconfig 看不见它。
  */
 interface QuotaLike {
   bytes: {

@@ -39,7 +39,7 @@ export const PROXY_FILES = ['.profile', '.bash_profile', '.bashrc']
 /**
  * 打印第一条 `http_proxy=...` 原文。
  *
- * 注意不能写成 `do;`——空命令开头是 shell 语法错误（docs/04 E27）。
+ * 注意不能写成 `do;`——空命令开头是 shell 语法错误。
  */
 export function proxyLineCommand(): string {
   const files = PROXY_FILES.map((name) => `"$HOME/${name}"`).join(' ')

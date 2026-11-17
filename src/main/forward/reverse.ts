@@ -165,7 +165,7 @@ export class ReverseTunnelManager {
     channel.on('close', cleanup)
 
     // 用 .pipe() 链而不是 pipeline()：channel 是 Duplex，
-    // pipeline 会等两端都结束，容易僵住（docs/04 E12）
+    // pipeline 会等两端都结束，容易僵住
     channel.pipe(
       new Transform({
         transform(chunk, _encoding, callback) {

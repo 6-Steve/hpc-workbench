@@ -1,7 +1,7 @@
 /**
  * 节点状态的归一化与可售判定。
  *
- * 为什么单独一个文件：这是全项目最典型的"能跑但结果错"的地方（docs/04 D1）。
+ * 为什么单独一个文件：这是全项目最典型的"能跑但结果错"的地方。
  * sinfo 给 `mix`，scontrol 给 `MIXED`，JSON 给 `["IDLE","DRAIN"]`——
  * 如果过滤条件写成 `state === 'idle'`，GPU 商店会一片空白**而且不报错**。
  *
@@ -79,7 +79,7 @@ export function normalizeNodeStates(raws: string[]): NodeState[] {
  *
  * ⚠️ 这个函数只适用于 **sinfo** 的语义。`scontrol show node` 实测从不返回 `MIXED`：
  * 16 台机器里 11 台是 `ALLOCATED`，而这 11 台里大部分仍有空闲卡（`gres_used < gres`）。
- * 用这个函数过滤 scontrol 数据，会把 16 台砍到 1 台，商店几乎全空——正是 docs/04 D1 那类 bug。
+ * 用这个函数过滤 scontrol 数据，会把 16 台砍到 1 台，商店几乎全空——正是这类 bug。
  * 判 scontrol 数据请用 `isBlocked`。
  */
 export function isSellable(states: NodeState[]): boolean {

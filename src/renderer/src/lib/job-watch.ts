@@ -10,7 +10,7 @@
  * 再来一条"作业 211291 已提交"只是噪音。
  *
  * 状态用 `string` 而不是全局的 `JobState`：这个模块要能在 node 侧编译跑单测，
- * 而 `JobState` 声明在 `src/preload/index.d.ts` 里，node 侧看不见（docs/04 E21）。
+ * 而 `JobState` 声明在 `src/preload/index.d.ts` 里，node 侧看不见。
  */
 
 export interface JobWatchEntry {

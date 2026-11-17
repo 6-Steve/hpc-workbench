@@ -29,7 +29,7 @@ const CONFLICT_OPTIONS: Array<{ id: ConflictPolicy; label: string; hint: string 
 ]
 
 /**
- * 传输确认框（docs/02 §2.5 最后一段：把选择过程透明化）。
+ * 传输确认框（把选择过程透明化）。
  *
  * 拖完直接开传是最容易误操作的实现——手滑拖错一个 200 GB 的目录，
  * 等发现时已经传了半小时。所以这里必须让用户先看清"多少个文件、多大、走哪条路、为什么"。

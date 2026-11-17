@@ -31,7 +31,7 @@ import { diffJobSnapshots, type JobWatchEntry, type JobWatchEvent } from './lib/
 import { preloadStale } from './lib/preload'
 import { usePoll } from './lib/use-poll'
 
-/** 可折叠的原始输出块。失败时"能看到原文"是这个项目唯一的自救手段（docs/04 §2.2） */
+/** 可折叠的原始输出块。失败时"能看到原文"是这个项目唯一的自救手段 */
 function RawBlock({
   label,
   text,
@@ -373,7 +373,7 @@ function DiagnosticsView({ onOpenSettings }: { onOpenSettings?: () => void }): J
 }
 
 /**
- * 轮询分级（docs/04 §3.1 P6 要求跳板机上的轮询必须分级）：
+ * 轮询分级（跳板机禁大负载，不能按作业页的频率打）：
  * 作业状态会变，20 秒一次；配额和点数几乎不动，而且配额实测要 550 ms，5 分钟一次足够。
  */
 const JOBS_POLL_MS = 20_000
@@ -933,7 +933,7 @@ export default function App(): JSX.Element {
        *
        * 这也是"搜到历史作业"的额外价值：从历史点进日志比从队列点更准，
        * 因为日志弹窗不用猜 `<作业名>-<作业号>.out`——很多作业用了
-       * `--output xxx.log`，猜必错（docs/04 E17）。
+       * `--output xxx.log`，猜必错。
        */
       if (item.id.startsWith('hjob:')) {
         const jobId = item.id.slice('hjob:'.length)

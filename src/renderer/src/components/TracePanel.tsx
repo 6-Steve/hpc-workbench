@@ -201,7 +201,7 @@ export function TracePanel({ onClose }: TracePanelProps): JSX.Element {
   const listRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
-    // 老旧 preload 的兜底：宁可显示一句"重开应用"，也不要抛 TypeError 白屏（docs/04 E20）
+    // 老旧 preload 的兜底：宁可显示一句"重开应用"，也不要抛 TypeError 白屏
     if (typeof window.hpc.traceList !== 'function' || typeof window.hpc.onTraceEntry !== 'function') {
       setUnavailable('这个窗口里的 preload 还是旧版本，读不到命令记录。把应用完全关掉、重新打开即可。')
       return

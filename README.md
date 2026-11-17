@@ -94,7 +94,11 @@ npm run dist         # 打 Windows 安装包 → release/
 `npm run probe` 是连接探针，`npm run inspect` 用来查看某条命令解析出来的结构——两个都需要真集群。
 
 架构上是 Electron 主进程 / 渲染进程分离：**碰网络的逻辑全在 `src/main/`**，渲染层没有 Node 权限，
-只能调 `preload` 暴露的白名单方法。细节见 `docs/`。
+只能调 `preload` 暴露的白名单方法。定位口诀：解析错找 `adapters/`，计算错找 `domain/`，
+卡顿找 `transfer/` 或界面。
+
+想接自己的集群，先看 `docs/03-数据契约与解析规范.md`——里面是每条命令的实际 JSON 长什么样、
+哪些字段会骗人。产品层面的取舍在 `docs/01-产品设计方案.md`。
 
 ## 隐私
 

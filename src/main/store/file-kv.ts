@@ -1,8 +1,8 @@
 /**
  * 纯 Node 的 KV 实现：单个 JSON 文件 + 原子写。
  *
- * 给命令行探针用（不依赖 Electron）。写盘策略就是 docs/02 §1.4 说的那套：
- * 先写临时文件再原子改名，避免写到一半断电留下坏文件。
+ * 给命令行探针用（不依赖 Electron）。写盘策略：先写临时文件再原子改名，
+ * 避免写到一半断电留下坏文件。
  */
 import { existsSync, mkdirSync, readFileSync, renameSync, unlinkSync, writeFileSync } from 'node:fs'
 import { dirname } from 'node:path'

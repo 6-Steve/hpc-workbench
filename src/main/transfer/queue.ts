@@ -532,7 +532,7 @@ export class TransferQueue {
     }
   }
 
-  /** 100ms 合并一次，别让进度把 IPC 打满（docs/04 E1） */
+  /** 100ms 合并一次，别让进度把 IPC 打满 */
   private emit(): void {
     if (!this.options.onUpdate) return
     if (this.notifyTimer) return

@@ -2,9 +2,9 @@
  * tar 流式上传（单段版本，最初用来验证链路可行性）。
  *
  * 数据路径：本地读文件 → tar-stream 打包 → SSH channel → 远端 `tar -x`
- * 全程不落地，文件边界只是 512 字节头部，没有逐文件往返（docs/02 §2.1）。
+ * 全程不落地，文件边界只是 512 字节头部，没有逐文件往返。
  *
- * 三条硬约束（docs/04 E2/E3、docs/02 §2.4）：
+ * 三条硬约束：
  * 1. 只通过 `Session.pipe` 走 `stream.pipeline`，靠它传导背压
  * 2. **远端退出码必须检查**——本地写完不代表远端解开成功，不查就是静默丢数据
  * 3. 先解到 `<dest>.partial/`，全部成功后再 `mv` 改名；改名在同文件系统内是原子的
@@ -91,7 +91,7 @@ async function packEntries(pack: Pack, entries: LocalEntry[]): Promise<void> {
   for (const entry of entries) {
     if (entry.isLink) continue
 
-    // Windows 的分隔符绝不能进远端路径（docs/04 E7）
+    // Windows 的分隔符绝不能进远端路径
     const name = entry.rel.split(sep).join('/')
 
     if (entry.isDir) {
@@ -103,7 +103,7 @@ async function packEntries(pack: Pack, entries: LocalEntry[]): Promise<void> {
       continue
     }
 
-    // 权限统一 644：Windows 没有 POSIX 权限位，不显式给会写出 000（docs/02 §2.4）
+    // 权限统一 644：Windows 没有 POSIX 权限位，不显式给会写出 000
     await new Promise<void>((resolve, reject) => {
       // tar-stream v2：entry() 返回可写流，把文件流 pipe 进去（比传 stream 参数更类型安全，
       // @types 里那个重载没写全）
@@ -200,7 +200,7 @@ export async function uploadDirectory(session: Session, options: UploadOptions):
     })
   }
 
-  // —— 传完自动核对一次，这是成本最低的兜底（docs/02 §2.4）——
+  // —— 传完自动核对一次，这是成本最低的兜底——
   const check = await session.exec(`du -sb ${shq(remoteDir)} && find ${shq(remoteDir)} -type f | wc -l`)
   let remoteBytes: number | null = null
   let remoteFiles: number | null = null

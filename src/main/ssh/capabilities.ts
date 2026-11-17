@@ -6,7 +6,7 @@
  * 写死的话，集群哪天升级到 23.11+，代码不会自动用上 JSON；降级也一样会崩。
  *
  * 探测成本：一次连接跑一遍，约 1-2 秒，结果随 profile 缓存进 store
- * （docs/03 §2.1、docs/04 §2.1）。
+ * （docs/03 §2.1）。
  */
 import type { ResolvedProfile } from '../profiles'
 import type { ExecResult, Session } from './session'

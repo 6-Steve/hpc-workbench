@@ -2,7 +2,7 @@
  * 极小的键值存储抽象。
  *
  * 为什么抽一层：能力探测缓存、settings、传输记录都要落盘，但落盘方式对
- * 调用方不该有区别。桌面应用里用 electron-store（docs/02 §1.4：刻意不用 SQLite），
+ * 调用方不该有区别。桌面应用里用 electron-store（刻意不用 SQLite），
  * 命令行探针（scripts/probe.ts）跑在纯 Node 里，用同语义的 JSON 文件实现。
  */
 export interface KVStore {

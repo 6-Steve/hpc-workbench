@@ -2,7 +2,7 @@
  * 计数信号量：限制同一连接上的并发 exec 通道数。
  *
  * 为什么要限：SSH 每个 exec 占一个 channel，服务端 MaxSessions 默认 10，
- * 超了直接 `channel open failure`，错误信息很不直观（docs/04 E5）。
+ * 超了直接 `channel open failure`，错误信息很不直观。
  */
 export class Semaphore {
   private readonly limit: number
