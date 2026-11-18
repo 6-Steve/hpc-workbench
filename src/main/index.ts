@@ -33,6 +33,7 @@ import { TraceStore } from './trace/store'
 import { CredentialVault } from './credentials/vault'
 import { createSafeStorageCipher } from './credentials/safe-storage-cipher'
 import { TRACE_LIMIT } from '../shared/trace'
+import { writeTunnelDefaults, type TunnelDefaults } from '../shared/tunnel-defaults'
 
 const isDev = !app.isPackaged
 const devServerUrl = process.env['ELECTRON_RENDERER_URL']
@@ -421,6 +422,11 @@ if (!gotLock) {
      * 关窗策略是"这台电脑上的习惯"，跟集群配置没有关系。
      */
     uiStore = new FileKVStore(join(configDir(), 'ui.json'))
+    /*
+     * 能力探测缓存，同时是"用户偏好"的落脚点（隧道默认端口、上次选的本地目录）。
+     * 抽成变量是因为 `applyInitialSetup` 也要往里写——见那里的注释。
+     */
+    const capabilityStore = new FileKVStore(join(configDir(), '.cache', 'capabilities.json'))
     const savedResidency = uiStore.get<string>('residency')
     if (savedResidency === 'quit' || savedResidency === 'when-busy' || savedResidency === 'always') {
       residency = savedResidency
@@ -440,7 +446,7 @@ if (!gotLock) {
       },
       hasActiveWork,
       configPath,
-      cache: new FileKVStore(join(configDir(), '.cache', 'capabilities.json')),
+      cache: capabilityStore,
       transfer,
       tunnels,
       reverseTunnels,
@@ -523,6 +529,7 @@ if (!gotLock) {
         extras?: SetupDraft[]
         mode: ConfigLocation['mode']
         dir?: string
+        tunnel?: TunnelDefaults
       }): ApplySetupResult & { restartRequired: boolean } => {
         const info = configResolution()
         const mode = request.mode ?? 'auto'
@@ -545,6 +552,28 @@ if (!gotLock) {
 
         const result = applySetup({ draft: request.draft, extras: request.extras, dir: target }, { credentials })
         if (!result.ok) return { ...result, restartRequired: false }
+
+        /*
+         * 隧道端口**写进 target 目录**，而不是当前进程的 `capabilityStore`。
+         *
+         * 向导第一步就能换配置目录。那时进程里的 store 还指着旧目录，端口会存进
+         * 一个重启后再也读不到的文件里——用户重新进隧道页，看到的还是 21056 / 7897，
+         * 而设置里明明改过。目录没变时才复用活着的那个实例，免得两份内存状态互相覆盖。
+         */
+        const tunneling = request.tunnel
+        if (tunneling) {
+          try {
+            writeTunnelDefaults(
+              target === info.dir ? capabilityStore : new FileKVStore(join(target, '.cache', 'capabilities.json')),
+              tunneling
+            )
+          } catch {
+            result.warnings = [
+              ...(result.warnings ?? []),
+              '隧道默认端口没存上，下次开隧道时手动填一下。'
+            ]
+          }
+        }
 
         try {
           writeConfigLocation(locationFile(), mode === 'custom' ? { mode, dir: target } : { mode })

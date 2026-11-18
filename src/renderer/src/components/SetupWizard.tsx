@@ -260,9 +260,18 @@ export function SetupWizard({ onDone }: { onDone: () => void }): JSX.Element {
           .filter((host): host is SshHost => Boolean(host?.identityAbsolute))
           .map((host) => ({ ...emptyDraft(), ...draftPatchFromHost(host) })),
         mode,
-        dir: mode === 'custom' ? customDir : undefined
+        dir: mode === 'custom' ? customDir : undefined,
+        /*
+         * 隧道端口跟着**同一次写盘**走。
+         *
+         * 原来是在 applyInitialSetup 成功之后另发一条 IPC 去存，看起来更"解耦"，
+         * 实则有个必踩的坑：向导第一步就能换配置目录，那时主进程的 store 还指着
+         * 旧目录，端口会写进一个重启后再也读不到的文件——用户回到隧道页，
+         * 看到的仍是 21056 / 7897，而设置里明明改过。
+         */
+        tunnel: { remotePort: Number(tunnel.remotePort), localPort: Number(tunnel.localPort) }
       })
-      .then(async (value) => {
+      .then((value) => {
         const applied = value as ApplyResult
         if (!applied.ok) {
           const listed = applied.issues ?? []
@@ -271,18 +280,6 @@ export function SetupWizard({ onDone }: { onDone: () => void }): JSX.Element {
           // 出错就退回到连接信息那一步：错在那几个框里
           setStep('connect')
           return
-        }
-
-        /*
-         * 隧道端口存成用户偏好。失败**不挡**整个配置——配置文件已经能用了，
-         * 拖着一句"端口没存上"卡在向导里不值得。
-         */
-        const saved = await window.hpc.setTunnelDefaults({
-          remotePort: Number(tunnel.remotePort),
-          localPort: Number(tunnel.localPort)
-        })
-        if (!saved.ok && saved.error) {
-          applied.warnings = [...(applied.warnings ?? []), `隧道默认端口没存上：${saved.error}`]
         }
 
         setResult(applied)
@@ -323,6 +320,14 @@ export function SetupWizard({ onDone }: { onDone: () => void }): JSX.Element {
   }, [step, draft, tunnel, submit])
 
   const tunnelWarnings = useMemo(() => validateTunnelPorts(tunnel).warnings, [tunnel])
+
+  /*
+   * 下方说明里引用的那两个数字，要跟**输入框里的当前值**一致。
+   * 写死 `TUNNEL_DEFAULTS` 的话，用户把端口改成 21057 之后，
+   * 下面还在一本正经地讲 21056，看着像没生效。
+   */
+  const remoteShown = tunnel.remotePort.trim() || String(TUNNEL_DEFAULTS.remotePort)
+  const localShown = tunnel.localPort.trim() || String(TUNNEL_DEFAULTS.localPort)
 
   /**
    * 可以"顺便一起加入"的其它主机。
@@ -732,7 +737,7 @@ export function SetupWizard({ onDone }: { onDone: () => void }): JSX.Element {
               <p className="font-medium">这两个值要按你的环境填，别直接照抄默认值</p>
               <ul className="mt-1.5 space-y-1.5">
                 <li>
-                  · <span className="font-mono">{TUNNEL_DEFAULTS.remotePort}</span> 必须和集群{' '}
+                  · <span className="font-mono">{remoteShown}</span> 必须和集群{' '}
                   <code className="font-mono">~/.profile</code> 里 <code className="font-mono">http_proxy</code>{' '}
                   的端口一致。不一致时集群上的 pip / conda / 各种命令行工具的代理会连不上，
                   而报错只会说"连接被拒绝"，指不到端口上来。核对：
@@ -741,7 +746,7 @@ export function SetupWizard({ onDone }: { onDone: () => void }): JSX.Element {
                   </code>
                 </li>
                 <li>
-                  · <span className="font-mono">{TUNNEL_DEFAULTS.localPort}</span> 是你本机代理软件真正监听的端口——
+                  · <span className="font-mono">{localShown}</span> 是你本机代理软件真正监听的端口——
                   Clash 默认 <span className="font-mono">7897</span>，V2Ray 常见{' '}
                   <span className="font-mono">10809</span>。开隧道前先确认它在跑。
                 </li>

@@ -32,6 +32,20 @@ describe('describeVerify', () => {
     expect(verdict.text).toContain('没法比对')
   })
 
+  it('提示里的端口跟着配置走，不是写死的 7897', () => {
+    // 代理端口每个环境都不同（Clash 7897 / V2Ray 10809 / 自建 7890），
+    // 说错端口会让人跑去查一个根本没在用的进程
+    const verdict = describeVerify({ ip: '1.2.3.4', error: null }, { ip: null, error: 'ECONNREFUSED' }, null, 7890)
+    expect(verdict.text).toContain('7890')
+    expect(verdict.text).not.toContain('7897')
+  })
+
+  it('不知道端口时只说"在监听"，不编一个数字出来', () => {
+    const verdict = describeVerify({ ip: '1.2.3.4', error: null }, { ip: null, error: 'ECONNREFUSED' })
+    expect(verdict.text).toContain('在监听')
+    expect(verdict.text).not.toMatch(/\d{4,5} 上监听/)
+  })
+
   it('只有本机通：隧道这条链断了', () => {
     const verdict = describeVerify({ ip: null, error: 'curl: (7) Failed to connect' }, { ip: '1.2.3.4', error: null })
     expect(verdict.tone).toBe('bad')

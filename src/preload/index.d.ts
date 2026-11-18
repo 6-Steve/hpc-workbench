@@ -912,6 +912,13 @@ interface HpcApi {
     extras?: SetupDraft[]
     mode: 'auto' | 'custom' | 'portable'
     dir?: string
+    /**
+     * 隧道默认端口，和配置**同一次写盘**。
+     *
+     * 不能让渲染层事后再单独调 `setTunnelDefaults`：向导第一步可能已经换了
+     * 配置目录，那时主进程的 store 还指着旧目录，端口会存进重启后读不到的地方。
+     */
+    tunnel?: { remotePort: number; localPort: number }
   }): Promise<SetupResult>
   /** 重启应用。`restartRequired` 为真时调它（会先松单实例锁） */
   relaunch(): Promise<{ ok: boolean }>

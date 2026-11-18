@@ -27,6 +27,70 @@ export interface TunnelDefaults {
 
 export const TUNNEL_DEFAULTS: TunnelDefaults = { remotePort: 21056, localPort: 7897 }
 
+/**
+ * 存进 KVStore 的两个键。
+ *
+ * 带 `tunnel.` 前缀是必需的：这个 store 同时放着能力探测缓存（`capabilities.<id>`），
+ * 扁平命名空间撞了名，表现会是"设置莫名回退"，而不是报错。
+ */
+export const TUNNEL_PREF_KEYS = {
+  remotePort: 'tunnel.reverseRemotePort',
+  localPort: 'tunnel.reverseLocalPort'
+} as const
+
+/**
+ * 只依赖读写的结构类型。
+ *
+ * `shared/` 里不能 import `main/store`（那是 Node 侧），所以这里只要形状对得上就行。
+ */
+export interface TunnelPrefStore {
+  get<T>(key: string): T | undefined
+  set<T>(key: string, value: T): void
+}
+
+/**
+ * 读用户存过的端口，读不到才回默认。
+ *
+ * 对脏值（字符串、越界、小数）一律当"没存过"处理，而不是把脏值原样吐给界面——
+ * 一个 `"21056"` 字符串送进 `listen()` 会在绑定时才炸，离"端口填错了"很远。
+ */
+export function readTunnelDefaults(store: TunnelPrefStore | null | undefined): TunnelDefaults {
+  if (!store) return { ...TUNNEL_DEFAULTS }
+  return {
+    remotePort: coercePort(store.get(TUNNEL_PREF_KEYS.remotePort)) ?? TUNNEL_DEFAULTS.remotePort,
+    localPort: coercePort(store.get(TUNNEL_PREF_KEYS.localPort)) ?? TUNNEL_DEFAULTS.localPort
+  }
+}
+
+/** 写端口偏好。返回真正落进去的值（已取整），调用方拿它回填界面 */
+export function writeTunnelDefaults(store: TunnelPrefStore, ports: TunnelDefaults): TunnelDefaults {
+  const clean: TunnelDefaults = {
+    remotePort: Math.trunc(ports.remotePort),
+    localPort: Math.trunc(ports.localPort)
+  }
+  store.set(TUNNEL_PREF_KEYS.remotePort, clean.remotePort)
+  store.set(TUNNEL_PREF_KEYS.localPort, clean.localPort)
+  return clean
+}
+
+function coercePort(value: unknown): number | null {
+  const number = typeof value === 'number' ? value : typeof value === 'string' ? Number(value.trim()) : NaN
+  if (!Number.isInteger(number) || number < 1 || number > 65535) return null
+  return number
+}
+
+/**
+ * 反向隧道那条"数据往哪走"的示意句。
+ *
+ * **必须吃当前值**。写死常量的话，用户把端口改成 21057 / 7890 之后，
+ * 输入框是对的、这句话还在说 21056 / 7897，等于界面自己打自己的脸。
+ */
+export function formatReverseFlow(remotePort: number | string, localPort: number | string): string {
+  const remote = String(remotePort).trim() || String(TUNNEL_DEFAULTS.remotePort)
+  const local = String(localPort).trim() || String(TUNNEL_DEFAULTS.localPort)
+  return `集群程序 → 127.0.0.1:${remote} → 你的电脑 ${local}（代理）`
+}
+
 /** 内核临时端口段。落在这一段里的固定端口会被随机抢走 */
 export const EPHEMERAL_RANGE = { min: 32768, max: 60999 } as const
 

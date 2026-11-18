@@ -38,6 +38,7 @@
  */
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { proxyExportSnippet } from '../../../shared/proxy'
+import { formatReverseFlow, TUNNEL_DEFAULTS } from '../../../shared/tunnel-defaults'
 import { describeVerify, type VerifyVerdict } from '../../../shared/tunnel-verify'
 import { formatAgo, formatSize } from '../lib/format'
 import { explainIpcError, stalePreloadError } from '../lib/preload'
@@ -63,18 +64,20 @@ const PRESETS: Preset[] = [
 ]
 
 /**
- * 反向转发的默认值。
+ * 反向转发的**占位**默认值，只用于"读设置还没回来"的那一帧。
+ *
+ * 真正生效的是向导里存的用户偏好（`window.hpc.tunnelDefaults()`），
+ * 所以任何**展示**都得用 state，不能用这两个常量——否则用户改过端口之后，
+ * 界面上会出现"输入框是新值、说明文字还是旧值"的自相矛盾。
  *
  * 21056 是第三次才选对的：
  * - 55555（原命令的值）被别的账号长期占着，绑不上；
  * - 55556 落在内核的临时端口段（`ip_local_port_range` = 32768–60999）里，
  *   别人的出站连接会临时征用它，表现为"时好时坏、`ss` 又查不到"；
  * - 21056 在 32768 以下，不会被临时端口抢走。
- *
- * 用户集群上 `~/.profile` 的 `http_proxy` 也定到同一个值，两边对齐。
  */
-const REVERSE_DEFAULT_REMOTE = '21056'
-const REVERSE_DEFAULT_LOCAL = '7897'
+const REVERSE_DEFAULT_REMOTE = String(TUNNEL_DEFAULTS.remotePort)
+const REVERSE_DEFAULT_LOCAL = String(TUNNEL_DEFAULTS.localPort)
 
 /** 隧道列表刷新：本地 IPC，不发 SSH，2 秒一次很便宜 */
 const LIST_POLL_MS = 2000
@@ -325,7 +328,7 @@ export function TunnelsView(): JSX.Element {
       }
       setVerdicts((prev) => ({
         ...prev,
-        [tunnel.id]: describeVerify(response.cluster!, response.local!, response.moved)
+        [tunnel.id]: describeVerify(response.cluster!, response.local!, response.moved, tunnel.targetPort)
       }))
     } catch (err) {
       setError(explainIpcError(err, '隧道自检').message)
@@ -500,7 +503,7 @@ export function TunnelsView(): JSX.Element {
               <strong className="font-medium">你本机</strong>的服务。最常见的用法是让集群上的程序
               通过你本机的代理上网：
               <span className="mt-0.5 block font-mono text-sub text-state-info">
-                集群程序 → 127.0.0.1:{REVERSE_DEFAULT_REMOTE} → 你的电脑 {REVERSE_DEFAULT_LOCAL}（代理）
+                {formatReverseFlow(reverseRemotePort, reverseLocalPort)}
               </span>
             </p>
 

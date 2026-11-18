@@ -29,7 +29,12 @@ import { canCreateAt, isDirWritable } from './config-location'
 import type { ApplySetupResult } from './setup'
 import type { SetupDraft } from '../shared/setup'
 import { defaultSshDir, readSshConfig, type SshImportResult } from './ssh-config-file'
-import { TUNNEL_DEFAULTS, validateTunnelPorts, type TunnelDefaults } from '../shared/tunnel-defaults'
+import {
+  readTunnelDefaults,
+  validateTunnelPorts,
+  writeTunnelDefaults,
+  type TunnelDefaults
+} from '../shared/tunnel-defaults'
 import { judgeLatency, type ProfileLatency } from '../shared/latency'
 import { probeLatency } from './ssh/latency'
 import { buildDiagnosticsBundle } from './diagnostics/bundle'
@@ -163,9 +168,6 @@ const latencyCache = new Map<string, ProfileLatency>()
 /** 正在进行的探测（同一时刻只测一台，并发会互相拖慢） */
 let latencyInFlight: Promise<ProfileLatency> | null = null
 let latencyInFlightId: string | null = null
-/** 反向隧道默认端口：集群侧监听 / 本机代理 */
-const TUNNEL_REMOTE_KEY = 'tunnel.reverseRemotePort'
-const TUNNEL_LOCAL_KEY = 'tunnel.reverseLocalPort'
 
 export interface JobsListResponse {
   ok: boolean
@@ -441,6 +443,13 @@ export interface IpcDeps {
     extras?: SetupDraft[]
     mode: ConfigLocation['mode']
     dir?: string
+    /**
+     * 隧道默认端口，**跟着同一次写盘走**。
+     *
+     * 不能事后单独存：向导第一步就可能把配置目录换掉，那时进程里的 store
+     * 还指着旧目录，端口会存进一个重启后再也读不到的地方。
+     */
+    tunnel?: TunnelDefaults
   }) => ApplySetupResult & { restartRequired: boolean }
   cache: KVStore
   transfer: TransferService
@@ -1108,7 +1117,13 @@ export function registerIpcHandlers(deps: IpcDeps): void {
     'app:setup-apply',
     (
       _event,
-      request: { draft: SetupDraft; extras?: SetupDraft[]; mode: 'auto' | 'custom' | 'portable'; dir?: string }
+      request: {
+        draft: SetupDraft
+        extras?: SetupDraft[]
+        mode: 'auto' | 'custom' | 'portable'
+        dir?: string
+        tunnel?: TunnelDefaults
+      }
     ): ApplySetupResult & { restartRequired: boolean } => deps.applyInitialSetup(request)
   )
 
@@ -1161,10 +1176,7 @@ export function registerIpcHandlers(deps: IpcDeps): void {
    * `http_proxy` 一致，7897 是本机 Clash 的端口——这两件事每个环境都不同，
    * 写死等于让用户每次开隧道都手动改一遍。
    */
-  ipcMain.handle('app:tunnel-defaults', (): TunnelDefaults => ({
-    remotePort: deps.cache.get<number>(TUNNEL_REMOTE_KEY) ?? TUNNEL_DEFAULTS.remotePort,
-    localPort: deps.cache.get<number>(TUNNEL_LOCAL_KEY) ?? TUNNEL_DEFAULTS.localPort
-  }))
+  ipcMain.handle('app:tunnel-defaults', (): TunnelDefaults => readTunnelDefaults(deps.cache))
 
   /**
    * 保存隧道默认端口。
@@ -1183,13 +1195,7 @@ export function registerIpcHandlers(deps: IpcDeps): void {
       const firstError = Object.values(check.errors)[0]
       if (firstError) return { ok: false, error: firstError }
 
-      const saved: TunnelDefaults = {
-        remotePort: Number(request.remotePort),
-        localPort: Number(request.localPort)
-      }
-      deps.cache.set(TUNNEL_REMOTE_KEY, saved.remotePort)
-      deps.cache.set(TUNNEL_LOCAL_KEY, saved.localPort)
-      return { ok: true, saved }
+      return { ok: true, saved: writeTunnelDefaults(deps.cache, request) }
     }
   )
 

@@ -25,7 +25,14 @@ export function describeVerify(
   cluster: EgressProbeLike,
   local: EgressProbeLike,
   /** 探测期间隧道计数器是否动过；null/undefined = 无从判断 */
-  moved?: boolean | null
+  moved?: boolean | null,
+  /**
+   * 探测时用的本机端口。
+   *
+   * 传进来是为了让提示说"检查 7890"而不是永远说 7897——用户的代理端口
+   * 未必是 Clash 默认值，指错端口会让他去查一个根本没在用的进程。
+   */
+  localPort?: number | null
 ): VerifyVerdict {
   // 1. 两边都通：比对出口 IP，这是唯一能证明"走的是你这台电脑"的证据
   if (cluster.ip && local.ip) {
@@ -57,9 +64,10 @@ export function describeVerify(
 
   // 2. 集群侧通、本机取不到：隧道可能没问题，但没法证明
   if (cluster.ip) {
+    const where = localPort ? `在 ${localPort} 上监听` : '在监听'
     return {
       tone: 'warn',
-      text: `集群侧通了（出口 ${cluster.ip}），但本机 Clash 没响应，没法比对。检查 Clash 是否在 7897 上监听`
+      text: `集群侧通了（出口 ${cluster.ip}），但本机代理没响应，没法比对。检查你的代理软件是否${where}`
     }
   }
 
