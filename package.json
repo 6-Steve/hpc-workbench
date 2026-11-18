@@ -1,7 +1,7 @@
 {
   "name": "hpc-workbench",
   "productName": "HPC Workbench",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "private": true,
   "description": "HPC 工作台 — 把 SSH + SLURM 命令行包装成 Windows 桌面应用",
   "main": "./out/main/index.js",

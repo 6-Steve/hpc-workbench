@@ -9,7 +9,7 @@ Windows 10 / 11 · x64 · 约 85 MB · 不需要管理员权限
 
 ## 装
 
-1. 下载 `HPC-Workbench-0.2.0-setup.exe`
+1. 在 [Releases](https://github.com/6-Steve/hpc-workbench/releases/latest) 页下载最新的 `HPC-Workbench-*-setup.exe`
 2. 双击运行。**没有做代码签名**，Windows SmartScreen 会拦一次：点「更多信息」→「仍要运行」
 3. 装到当前用户目录（`%LOCALAPPDATA%\Programs`），不会弹 UAC
 
