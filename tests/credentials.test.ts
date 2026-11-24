@@ -146,13 +146,13 @@ describe('CredentialVault · scope 隔离', () => {
     expect(ldap.ok && ldap.secret).toBe('ldap-pw')
   })
 
-  it('私钥路径的三种写法指向同一条记录', () => {
+  it('同一私钥的等价路径指向同一条记录', () => {
     const { vault } = vaultWith()
-    vault.set('key-passphrase', 'C:\\Users\\x\\.ssh\\id_ed25519', 'pp')
-
-    // Windows 上反斜杠和斜杠是同一个文件，大小写也不敏感（这里只保证分隔符）
-    const slash = vault.get('key-passphrase', 'C:/Users/x/.ssh/id_ed25519')
-    expect(slash.ok).toBe(true)
+    const windows = process.platform === 'win32'
+    const keyPath = windows ? 'C:\\Users\\x\\.ssh\\id_ed25519' : '/home/x/.ssh/id_ed25519'
+    const equivalent = windows ? 'C:/Users/x/.ssh/id_ed25519' : '/home/x/./.ssh/id_ed25519'
+    vault.set('key-passphrase', keyPath, 'pp')
+    expect(vault.get('key-passphrase', equivalent)).toMatchObject({ ok: true, secret: 'pp' })
   })
 
   it('删某条 profile 的凭据时，不会连带把私钥口令弄哑', () => {
@@ -314,7 +314,7 @@ describe('CredentialVault · 解密缓存', () => {
 })
 
 describe('types · scope 规范化', () => {
-  it('key-passphrase 的路径分隔符被统一', () => {
+  it.runIf(process.platform === 'win32')('key-passphrase 的 Windows 路径分隔符被统一', () => {
     const a = normalizeScope('key-passphrase', 'C:\\Users\\x\\id')
     const b = normalizeScope('key-passphrase', 'C:/Users/x/id')
     expect(a).toBe(b)

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { parseUriList } from '../lib/drop-path'
+import { shortcutModifier } from '../lib/platform'
 import { formatSize, formatTime } from '../lib/format'
 import {
   EMPTY_SELECTION,
@@ -515,14 +516,14 @@ export function FilePane({
         {
           id: 'cut',
           label: '剪切',
-          shortcut: 'Ctrl+X',
+          shortcut: `${shortcutModifier}X`,
           disabled: Boolean(listing?.virtualRoot),
           disabledReason: '盘符不能剪切'
         },
         {
           id: 'copy',
           label: '复制',
-          shortcut: 'Ctrl+C',
+          shortcut: `${shortcutModifier}C`,
           disabled: Boolean(listing?.virtualRoot),
           disabledReason: '盘符不能复制'
         },
@@ -548,7 +549,7 @@ export function FilePane({
               {
                 id: 'paste',
                 label: clipboard.mode === 'cut' ? `移动到此处（${clipboard.paths.length} 项）` : `复制到此处（${clipboard.paths.length} 项）`,
-                shortcut: 'Ctrl+V'
+                shortcut: `${shortcutModifier}V`
               }
             ]
           : []),
@@ -1058,8 +1059,8 @@ export function FilePane({
             )}
             <span className="truncate">
               {clipboard && clipboard.side === side
-                ? `剪贴板有 ${clipboard.paths.length} 项 · Ctrl+V 粘到此处`
-                : 'Ctrl+点击多选 · Shift+点击选一段 · Ctrl+A 全选 · 右键更多'}
+                ? `剪贴板有 ${clipboard.paths.length} 项 · ${shortcutModifier}V 粘到此处`
+                : `${shortcutModifier}点击多选 · Shift+点击选一段 · ${shortcutModifier}A 全选 · 右键更多`}
             </span>
           </span>
         ) : (

@@ -13,6 +13,7 @@
  */
 import type { Tab } from '../lib/dock-tabs'
 import { TITLE_CHIP_TARGETS } from '../lib/title-chips'
+import { isMac, shortcutModifier, traceShortcut } from '../lib/platform'
 import { StatusDot } from './ui'
 
 export type ConnectionStatus = 'connecting' | 'online' | 'offline'
@@ -87,11 +88,15 @@ export function TitleBar({
   const nav = (tab: Tab): (() => void) | undefined => (onNavigate ? () => onNavigate(tab) : undefined)
 
   return (
-    <header className="drag-region flex h-11 shrink-0 items-center justify-between gap-4 border-b border-ink-200/70 bg-surface/80 pl-4 pr-0 backdrop-blur">
+    <header className={`drag-region flex shrink-0 items-center justify-between gap-4 border-b border-ink-200/70 bg-surface/80 backdrop-blur ${
+      isMac ? 'h-12 pl-[88px] pr-3' : 'h-11 pl-4 pr-0'
+    }`}>
       <div className="flex min-w-0 items-center gap-2.5">
-        <div className="grid h-6 w-6 shrink-0 place-items-center rounded-control bg-inverse text-sub font-semibold text-white">
-          H
-        </div>
+        {!isMac && (
+          <div className="grid h-6 w-6 shrink-0 place-items-center rounded-control bg-inverse text-sub font-semibold text-white">
+            H
+          </div>
+        )}
         <span className="shrink-0 text-emph font-medium text-ink-800">HPC 工作台</span>
 
         {/* 连接状态：灯 + 文字，只有图标的话用户不知道那是什么意思 */}
@@ -124,7 +129,7 @@ export function TitleBar({
           </svg>
           <span className="min-w-0 flex-1 truncate text-left">搜索页面、动作、作业…</span>
           <kbd className="shrink-0 rounded border border-ink-200 bg-ink-50 px-1 py-[1px] font-mono text-meta text-ink-500">
-            Ctrl K
+            {shortcutModifier}K
           </kbd>
         </button>
       )}
@@ -190,7 +195,7 @@ export function TitleBar({
           <button
             type="button"
             onClick={onToggleTrace}
-            title={`命令记录：看应用背后发了哪些命令（Ctrl+\`）`}
+            title={`命令记录（${traceShortcut}）`}
             className={`no-drag ml-1 flex shrink-0 items-center gap-1 rounded-control border px-1.5 py-[3px] text-meta transition ${
               traceOpen
                 ? 'border-ink-400 bg-ink-100 text-ink-800'
@@ -207,7 +212,7 @@ export function TitleBar({
         {bell && <div className="ml-1 flex shrink-0 items-center">{bell}</div>}
 
         {/* 窗口按钮靠右贴边，和系统窗口按钮的位置习惯一致 */}
-        <div className="no-drag ml-1.5 flex items-center">
+        {!isMac && <div className="no-drag ml-1.5 flex items-center">
           <WindowButton label="最小化" onClick={() => window.hpc.window.minimize()}>
             <path d="M2 5h6" stroke="currentColor" strokeWidth="1.2" />
           </WindowButton>
@@ -217,7 +222,7 @@ export function TitleBar({
           <WindowButton label="关闭" danger onClick={() => window.hpc.window.close()}>
             <path d="M2.5 2.5l5 5M7.5 2.5l-5 5" stroke="currentColor" strokeWidth="1.2" />
           </WindowButton>
-        </div>
+        </div>}
       </div>
     </header>
   )

@@ -157,7 +157,7 @@ describe('config-location · 读写与探测', () => {
     expect(isDirWritable(ROOT)).toBe(true)
   })
 
-  it('盘符不存在 → 建不出来', () => {
+  it.runIf(process.platform === 'win32')('盘符不存在 → 建不出来', () => {
     expect(canCreateAt('Q:\\definitely-not-here\\config')).toBe(false)
   })
 

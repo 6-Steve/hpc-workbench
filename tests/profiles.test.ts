@@ -145,7 +145,8 @@ describe('pickProfile', () => {
 
 describe('expandPath', () => {
   it('不碰已经绝对的路径', () => {
-    const absolute = 'C:/Users/user01/.ssh/id_rsa'
-    expect(expandPath(absolute, 'C:/work/config')).toBe(absolute)
+    const windows = process.platform === 'win32'
+    const absolute = windows ? 'C:/Users/user01/.ssh/id_rsa' : '/home/user01/.ssh/id_rsa'
+    expect(expandPath(absolute, windows ? 'C:/work/config' : '/work/config')).toBe(absolute)
   })
 })

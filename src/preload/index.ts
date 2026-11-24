@@ -12,6 +12,7 @@ const api = {
    * 不参与业务逻辑，见 `src/shared/api-version.ts`。
    */
   apiVersion: PRELOAD_API_VERSION,
+  platform: process.platform,
   appInfo: (): Promise<unknown> => ipcRenderer.invoke('app:info'),
   /**
    * 在资源管理器里打开配置目录。

@@ -1,19 +1,27 @@
 # HPC 工作台
 
-把 SSH + SLURM 的命令行，包成一个能看、能点、能拖的 Windows 桌面应用。
+把 SSH + SLURM 的命令行，包成一个能看、能点、能拖的桌面应用，支持 Windows 和 macOS。
 
-**[↓ 下载安装包](https://github.com/6-Steve/hpc-workbench/releases/latest)**　
+**[↓ 下载 Windows 安装包](https://github.com/6-Steve/hpc-workbench/releases/latest)**　
 Windows 10 / 11 · x64 · 约 85 MB · 不需要管理员权限
 
 ---
 
 ## 装
 
+### Windows
+
 1. 在 [Releases](https://github.com/6-Steve/hpc-workbench/releases/latest) 页下载最新的 `HPC-Workbench-*-setup.exe`
 2. 双击运行。**没有做代码签名**，Windows SmartScreen 会拦一次：点「更多信息」→「仍要运行」
 3. 装到当前用户目录（`%LOCALAPPDATA%\Programs`），不会弹 UAC
 
 卸载走「设置 → 应用」，配置和凭据会留在原地，不会一起删掉。
+
+### macOS（Apple Silicon）
+
+在 Apple Silicon Mac 上按下文「从源码跑」的步骤生成 DMG。打开 `release/HPC-Workbench-*-mac-arm64.dmg`，把 `HPC Workbench.app` 拖进「应用程序」，推出磁盘映像后从「应用程序」启动。
+
+默认配置目录是 `~/Library/Application Support/HPC Workbench/config`。如果在向导里选择便携模式，配置会放在与 `.app` 同级的 `config/` 目录。
 
 ## 第一次打开
 
@@ -25,16 +33,14 @@ Windows 10 / 11 · x64 · 约 85 MB · 不需要管理员权限
 | **连接信息** | 名称、主机地址、端口、用户名；认证方式选**私钥文件**或**密码** |
 | **隧道端口** | 反向隧道默认 21056，被占会自动退到邻近空闲端口 |
 
-密码存进 Windows 凭据管理器（DPAPI 加密），**不写进配置文件**。钥匙串不可用时会直接拒绝保存，
-不会退回明文。
+保存的密码由系统加密，Windows 使用 DPAPI，macOS 使用登录钥匙串。换机器或换系统账户后需要重新输入密码。
 
 已经有 `~/.ssh/config` 的话，向导里可以一键导入，只认 `HostName` / `User` / `Port` / `IdentityFile`。
 
 ## 界面
 
-无边框窗口，左边一条 Dock 是八个页面。标题栏常驻三个数字（作业数 / 存储水位 / 点数余额），
-**点一下就能跳到对应页面**；右边是跳板机切换、通知铃铛和搜索框——`Ctrl K` 不只是搜，
-还能直接跳页面、跳作业。
+窗口左边的导航栏可以切换八个页面。标题栏常驻三个数字（作业数 / 存储水位 / 点数余额），
+**点一下就能跳到对应页面**。右边是跳板机切换、通知铃铛和搜索框。按 `Ctrl+K`（Mac 上按 `⌘K`）可以搜索页面和作业。在 Mac 上按 `⌘⇧L` 可以打开命令记录。
 
 | 页面 | 做什么 |
 |---|---|
@@ -75,8 +81,7 @@ Windows 10 / 11 · x64 · 约 85 MB · 不需要管理员权限
 ## 已知限制
 
 - **只面向一个集群**：所有数据靠解析 SLURM 的 `--json` 输出得来，换一套集群要重新适配解析层
-- **没有代码签名**：首次运行会被 SmartScreen 拦一次
-- **只有 Windows**：不做跨平台
+- Windows 安装包未签名，首次运行时 SmartScreen 可能会提示。下文的 macOS 本地构建使用临时签名，未经 Apple 公证。
 - **不做删除同步**：这是刻意的——一次误操作能删掉实验数据
 
 ## 从源码跑
@@ -89,6 +94,12 @@ npm run dev          # 开发模式
 npm run typecheck    # 类型检查
 npm test             # 单元测试
 npm run dist         # 打 Windows 安装包 → release/
+```
+
+在 Apple Silicon Mac 上安装依赖后，用下面的命令生成当前架构的 DMG，输出到 `release/`。
+
+```bash
+npm run dist:mac -- --publish never -c.mac.identity=- -c.mac.hardenedRuntime=false
 ```
 
 `npm run probe` 是连接探针，`npm run inspect` 用来查看某条命令解析出来的结构——两个都需要真集群。

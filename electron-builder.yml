@@ -4,7 +4,7 @@
 # 所以刻意做了三件事：安装到用户目录（不要管理员）、配置写到 %APPDATA%（不写安装目录）、
 # 卸载时保留配置（重装不用重填）。
 #
-# 生成安装包：npm run dist
+# 生成安装包：Windows 用 npm run dist，macOS 用 npm run dist:mac
 # 只生成免安装目录（调试用，快很多）：npm run pack
 #
 # 首次打包会下载 NSIS 工具链。国内网络常报 `Response code 502`，设一次镜像即可：
@@ -45,6 +45,7 @@ files:
   - package.json
   # 托盘图标：运行时从 app.getAppPath()/build/icon.ico 读，不打进去托盘就是空白
   - build/icon.ico
+  - build/trayTemplate@2x.png
   - '!**/*.map'
   # ssh2 的可选原生加速模块（cpu-features）。本机安装时它没有编译出 .node，
   # 而 ssh2 自己是 `try { require('cpu-features')() } catch {}`——缺了就走纯 JS，
@@ -73,6 +74,12 @@ win:
       arch: [x64]
   icon: build/icon.ico
   artifactName: ${productName}-${version}-setup.${ext}
+
+mac:
+  target: dmg
+  icon: build/icon.icns
+  category: public.app-category.developer-tools
+  artifactName: HPC-Workbench-${version}-mac-${arch}.${ext}
 
 nsis:
   # 不要 oneClick：一键安装会装到默认位置且不给选，同学想装到 D 盘就没辙

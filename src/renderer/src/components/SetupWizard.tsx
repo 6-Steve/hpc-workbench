@@ -394,8 +394,8 @@ export function SetupWizard({ onDone }: { onDone: () => void }): JSX.Element {
               {(
                 [
                   ['auto', '默认位置', info?.defaultDir, '跟着系统用户走，重装系统前都在。绝大多数人用这个。'],
-                  ['portable', '程序目录（便携）', info?.portableDir, '放在应用旁边，整个文件夹拷走就能换台机器用。'],
-                  ['custom', '自己选一个目录', customDir || null, '放 D 盘、U 盘、同步盘都行，只要可写。']
+                  ['portable', '程序目录（便携）', info?.portableDir, '配置保存在应用旁边的 config 文件夹。'],
+                  ['custom', '自己选一个目录', customDir || null, '可以选择任意有写入权限的文件夹。']
                 ] as Array<[Mode, string, string | null | undefined, string]>
               ).map(([id, title, dir, hint]) => {
                 const active = mode === id

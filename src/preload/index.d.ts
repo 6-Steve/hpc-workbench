@@ -881,6 +881,7 @@ interface HpcApi {
    * 声明成可选是故意的：旧 preload 上这个字段根本不存在。
    */
   readonly apiVersion?: number
+  readonly platform: NodeJS.Platform
   appInfo(): Promise<AppInfo>
   /**
    * 在资源管理器里打开目录。`which` 只接受 `'current'`（当前生效的配置目录）
