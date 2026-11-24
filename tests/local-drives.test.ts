@@ -29,30 +29,26 @@ describe('本地驱动器列表（此电脑）', () => {
     }
   })
 
-  it('盘符根的上一级是「此电脑」，不是它自己', async () => {
+  it('系统根目录的上一级按平台处理', async () => {
     const drives = await listLocalDir(DRIVES_ROOT)
     const first = drives.entries[0]!
     const sep = process.platform === 'win32' ? '\\' : ''
     const rootPath = process.platform === 'win32' ? `${first.name}${sep}` : first.name
 
     const root = await listLocalDir(rootPath)
-    expect(root.parent).toBe(DRIVES_ROOT)
+    expect(root.parent).toBe(process.platform === 'win32' ? DRIVES_ROOT : null)
   })
 
-  it('从盘符根返回后，又回到带 virtualRoot 标记的列表', async () => {
+  it.runIf(process.platform === 'win32')('从盘符根返回后，又回到带 virtualRoot 标记的列表', async () => {
     const drives = await listLocalDir(DRIVES_ROOT)
     const first = drives.entries[0]!
-    const sep = process.platform === 'win32' ? '\\' : ''
-    const rootPath = process.platform === 'win32' ? `${first.name}${sep}` : first.name
-
-    const root = await listLocalDir(rootPath)
+    const root = await listLocalDir(`${first.name}\\`)
     const back = await listLocalDir(root.parent!)
     expect(back.virtualRoot).toBe(true)
     expect(back.entries.map((e) => e.name)).toEqual(drives.entries.map((e) => e.name))
   })
 
-  it('正斜杠写法也能认出来（dirname 会吐正斜杠）', async () => {
-    if (process.platform !== 'win32') return
+  it.runIf(process.platform === 'win32')('正斜杠写法也能认出来（dirname 会吐正斜杠）', async () => {
     const listing = await listLocalDir('C:/')
     expect(listing.parent).toBe(DRIVES_ROOT)
   })

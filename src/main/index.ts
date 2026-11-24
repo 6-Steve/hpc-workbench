@@ -7,7 +7,7 @@
  */
 import { BrowserWindow, Menu, Tray, app, ipcMain, nativeImage, shell } from 'electron'
 import { existsSync, mkdirSync, readFileSync } from 'node:fs'
-import { dirname, join } from 'node:path'
+import { dirname, join, resolve } from 'node:path'
 import { registerIpcHandlers } from './ipc'
 import { resolveConfigDir, type ConfigDirResolution, type ConfigLocation } from './config-dir'
 import { applySetup, type ApplySetupResult } from './setup'
@@ -36,16 +36,17 @@ import { TRACE_LIMIT } from '../shared/trace'
 import { writeTunnelDefaults, type TunnelDefaults } from '../shared/tunnel-defaults'
 
 const isDev = !app.isPackaged
+const isMac = process.platform === 'darwin'
 const devServerUrl = process.env['ELECTRON_RENDERER_URL']
 
 /**
  * "程序目录"：便携模式相对的就是它。
  *
- * 打包后是 **exe 所在目录**（不是 `app.getAppPath()`，那指向 asar 内部）；
- * 开发时是仓库根。用户把 `config/` 放这儿，就等于"绿色版"。
+ * 便携配置与 .app 或 exe 同级，开发时放在仓库根目录。
  */
 function appRoot(): string {
-  return app.isPackaged ? dirname(process.execPath) : app.getAppPath()
+  if (!app.isPackaged) return app.getAppPath()
+  return isMac ? resolve(process.resourcesPath, '../../..') : dirname(process.execPath)
 }
 
 /** 指针文件永远在 userData 下——它不能跟着配置目录跑，否则就是循环依赖 */
@@ -190,10 +191,11 @@ function ensureTray(): void {
    * `createFromPath` 对 asar 路径的支持在不同 Electron 版本上不一致，
    * 而 `readFileSync` 走的是 Electron 打过补丁的 fs，asar 里也能读。
    */
-  const iconPath = join(app.getAppPath(), 'build', 'icon.ico')
+  const iconPath = join(app.getAppPath(), 'build', isMac ? 'trayTemplate@2x.png' : 'icon.ico')
   let image = nativeImage.createEmpty()
   try {
-    const loaded = nativeImage.createFromBuffer(readFileSync(iconPath))
+    const loaded = nativeImage.createFromBuffer(readFileSync(iconPath), { scaleFactor: isMac ? 2 : 1 })
+    if (isMac) loaded.setTemplateImage(true)
     if (!loaded.isEmpty()) image = loaded
   } catch {
     // 图标读不到也要能建托盘：否则"关窗驻留"就没有出口了
@@ -212,7 +214,7 @@ function createWindow(): BrowserWindow {
     minWidth: 960,
     minHeight: 640,
     show: false,
-    frame: false,
+    ...(isMac ? { titleBarStyle: 'hidden', trafficLightPosition: { x: 14, y: 16 } } : { frame: false }),
     backgroundColor: '#f6f7f9',
     title: 'HPC 工作台',
     webPreferences: {
@@ -269,7 +271,8 @@ function createWindow(): BrowserWindow {
   return window
 }
 
-function registerWindowControls(): void {  ipcMain.on('window:minimize', (event) => {
+function registerWindowControls(): void {
+  ipcMain.on('window:minimize', (event) => {
     BrowserWindow.fromWebContents(event.sender)?.minimize()
   })
   ipcMain.on('window:toggle-maximize', (event) => {
@@ -288,14 +291,20 @@ if (!gotLock) {
   app.quit()
 } else {
   app.on('second-instance', () => {
-    if (!mainWindow) return
-    if (mainWindow.isMinimized()) mainWindow.restore()
-    mainWindow.focus()
+    if (mainWindow) showMainWindow()
   })
 
   void app.whenReady().then(() => {
-    app.setAppUserModelId('com.hpc.workbench')
-    Menu.setApplicationMenu(null)
+    if (isMac) {
+      Menu.setApplicationMenu(Menu.buildFromTemplate([
+        { role: 'appMenu' },
+        { role: 'editMenu' },
+        { role: 'windowMenu' }
+      ]))
+    } else {
+      if (process.platform === 'win32') app.setAppUserModelId('com.hpc.workbench')
+      Menu.setApplicationMenu(null)
+    }
 
     /*
      * 先把配置目录建出来。
@@ -588,9 +597,7 @@ if (!gotLock) {
 
     mainWindow = createWindow()
 
-    app.on('activate', () => {
-      if (BrowserWindow.getAllWindows().length === 0) mainWindow = createWindow()
-    })
+    app.on('activate', showMainWindow)
   })
 
   app.on('window-all-closed', () => {

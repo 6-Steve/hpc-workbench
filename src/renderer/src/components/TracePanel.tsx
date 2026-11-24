@@ -25,6 +25,7 @@ import {
   type TraceEntry,
   type TraceRecord
 } from '../../../shared/trace'
+import { traceShortcut } from '../lib/platform'
 
 interface TracePanelProps {
   onClose: () => void
@@ -369,7 +370,7 @@ export function TracePanel({ onClose }: TracePanelProps): JSX.Element {
           type="button"
           onClick={onClose}
           className="shrink-0 rounded-control border border-ink-200 px-1.5 py-[3px] text-meta text-ink-500 transition hover:border-ink-300 hover:text-ink-700"
-          title="收起（Ctrl+`）"
+          title={`收起（${traceShortcut}）`}
         >
           收起
         </button>

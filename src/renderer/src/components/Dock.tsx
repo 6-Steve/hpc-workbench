@@ -9,6 +9,7 @@
  */
 
 import { DOCK_TABS, type Tab } from '../lib/dock-tabs'
+import { isMac } from '../lib/platform'
 
 export type { Tab }
 
@@ -123,7 +124,9 @@ interface DockProps {
 
 export function Dock({ active, onChange }: DockProps): JSX.Element {
   return (
-    <nav className="no-drag flex w-14 shrink-0 flex-col items-center gap-1 border-r border-ink-200/70 bg-surface/60 py-2">
+    <nav aria-label="工作台页面" className={`no-drag flex shrink-0 flex-col gap-1 border-r border-ink-200/70 ${
+      isMac ? 'w-24 bg-ink-50 px-2 py-3' : 'w-14 items-center bg-surface/60 py-2'
+    }`}>
       {ITEMS.map((item) => {
         const isActive = item.id === active
         return (
@@ -133,21 +136,26 @@ export function Dock({ active, onChange }: DockProps): JSX.Element {
               onClick={() => onChange(item.id)}
               aria-label={item.label}
               aria-current={isActive ? 'page' : undefined}
+              title={isMac ? item.hint : undefined}
               className={
-                'grid h-10 w-10 place-items-center rounded-surface transition ' +
-                (isActive
-                  ? 'bg-scrim text-white shadow-card'
-                  : 'text-ink-500 hover:bg-ink-100 hover:text-ink-700')
+                isMac
+                  ? `flex h-9 w-full items-center gap-2 rounded-control px-2 text-sub transition ${
+                      isActive ? 'bg-accent-500/[0.15] font-medium text-ink-900' : 'text-ink-600 hover:bg-ink-100'
+                    }`
+                  : `grid h-10 w-10 place-items-center rounded-surface transition ${
+                      isActive ? 'bg-scrim text-white shadow-card' : 'text-ink-500 hover:bg-ink-100 hover:text-ink-700'
+                    }`
               }
             >
               {item.icon}
+              {isMac && <span>{item.label}</span>}
             </button>
 
             {/* 悬停说明：桌面软件的习惯是在图标旁边浮出名字，而不是只给一个 title */}
-            <div className="pointer-events-none absolute left-12 top-1/2 z-30 hidden -translate-y-1/2 whitespace-nowrap rounded-control bg-scrim/95 px-2 py-1 text-sub text-white shadow-pop group-hover:block">
+            {!isMac && <div className="pointer-events-none absolute left-12 top-1/2 z-30 hidden -translate-y-1/2 whitespace-nowrap rounded-control bg-scrim/95 px-2 py-1 text-sub text-white shadow-pop group-hover:block">
               <span className="font-medium">{item.label}</span>
               <span className="ml-1.5 text-night-sub">{item.hint}</span>
-            </div>
+            </div>}
           </div>
         )
       })}

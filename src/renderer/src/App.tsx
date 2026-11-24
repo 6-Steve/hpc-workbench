@@ -10,6 +10,7 @@ import { Card, Field, Mono, PageHeader, PageShell } from './components/ui'
 import { CommandPalette } from './components/CommandPalette'
 import { Dock } from './components/Dock'
 import { DOCK_TABS, type Tab } from './lib/dock-tabs'
+import { isMac } from './lib/platform'
 import { formatSize } from './lib/format'
 import { setTrayResident } from './lib/use-poll'
 import { JobLogDialog } from './components/JobLogDialog'
@@ -820,8 +821,10 @@ export default function App(): JSX.Element {
         setPaletteOpen((open) => !open)
         return
       }
-      // Ctrl+`：和 VSCode 同一个位置的开合习惯
-      if ((event.ctrlKey || event.metaKey) && event.key === '`') {
+      const tracePressed = isMac
+        ? event.metaKey && event.shiftKey && event.code === 'KeyL'
+        : (event.ctrlKey || event.metaKey) && event.key === '`'
+      if (tracePressed) {
         event.preventDefault()
         toggleTrace()
         return

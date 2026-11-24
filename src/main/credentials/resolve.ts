@@ -51,7 +51,7 @@ export function applyCredentials(
         kind: found.reason,
         message:
           found.reason === 'undecryptable'
-            ? `${profile.label} 的密码存过但解不开（多半是换了 Windows 账户或重装了系统），重新输一次就好。`
+            ? `${profile.label} 的密码在当前系统账户下解不开，请重新输入。`
             : `${profile.label} 用密码登录，但还没保存密码。`
       }
     }
