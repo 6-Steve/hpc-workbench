@@ -16,4 +16,4 @@
  * 放在 shared 下是因为两边都要 import：preload 在 node 侧打包，
  * 渲染层在 web 侧打包，同一个文件会被分别编进两个 bundle——这正是要的效果。
  */
-export const PRELOAD_API_VERSION = 29
+export const PRELOAD_API_VERSION = 30

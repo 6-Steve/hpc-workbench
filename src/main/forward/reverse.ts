@@ -45,17 +45,54 @@ export interface ReverseTunnelRequest {
 interface ReverseRecord {
   info: TunnelInfo
   session: Session
+  /** 重连要用的参数（`remotePort` 是 fallback 之后**实际绑上**的那个） */
+  request: ReverseTunnelRequest
   /** 取消订阅"远端连进来了"事件 */
   unsubscribe: () => void
+  /** 取消订阅"连接关了"事件 */
+  unsubscribeSession: () => void
   sockets: Set<Socket>
   channels: Set<ClientChannel>
+  /** 已经重试过几次；连上之后归零 */
+  attempts: number
+  /** 下一次重连的定时器；null = 没在重连 */
+  timer: ReturnType<typeof setTimeout> | null
+  /** 用户主动关了。之后所有异步回调都要立刻收手 */
+  closed: boolean
+}
+
+/**
+ * 自动重连的节奏。
+ *
+ * 断线在这条链路上是常态（本机 → 代理 → 跳板机，中间任何一跳抖动都会断），
+ * 所以"断了就报错、等人来点"不是可接受的交互：用户开着反向隧道是为了让集群
+ * 能上网，断的时候他多半正在跑一个长任务，根本不会盯着这个界面。
+ *
+ * 立刻一次，然后 2s / 4s / 8s / 16s（封顶 30s），共 5 次约半分钟。还连不上就认了——
+ * 再拖下去只会让用户以为它还活着。
+ */
+const RECONNECT_BASE_MS = 2000
+const RECONNECT_MAX_ATTEMPTS = 5
+const RECONNECT_MAX_DELAY_MS = 30_000
+
+export interface ReverseTunnelOptions {
+  onLog?: (message: string) => void
+  /**
+   * 断线后重新拿一条连接（同一个 profile）。
+   *
+   * **不传就等于不自动重连**，行为退回"断了就断"。单测里只关心转发行为时可以不给。
+   */
+  getSession?: (profileId: string | undefined) => Promise<Session>
+  /** 退避基准；单测里调到几十毫秒 */
+  reconnectBaseMs?: number
+  reconnectMaxAttempts?: number
 }
 
 export class ReverseTunnelManager {
   private readonly tunnels = new Map<string, ReverseRecord>()
   private seq = 0
 
-  constructor(private readonly options: { onLog?: (message: string) => void } = {}) {}
+  constructor(private readonly options: ReverseTunnelOptions = {}) {}
 
   list(): TunnelInfo[] {
     return [...this.tunnels.values()].map((record) => ({ ...record.info }))
@@ -101,6 +138,7 @@ export class ReverseTunnelManager {
       bytesIn: 0,
       bytesOut: 0,
       lastError: null,
+      connected: true,
       profileId: request.profileId,
       profileLabel: request.profileLabel
     }
@@ -108,20 +146,137 @@ export class ReverseTunnelManager {
     const record: ReverseRecord = {
       info,
       session,
+      // 记的是**绑成功**的端口：openWithFallback 可能已经把它从 21056 退到了 21057，
+      // 重连时还去抢原来的号是徒劳的
+      request: { ...request, remotePort: boundPort },
       unsubscribe: () => {},
+      unsubscribeSession: () => {},
       sockets: new Set(),
-      channels: new Set()
+      channels: new Set(),
+      attempts: 0,
+      timer: null,
+      closed: false
     }
 
-    record.unsubscribe = session.onReverseConnection((connection) => {
+    // 先入表再挂订阅：`onClose` 在"连接已经关了"时会**同步**回调，
+    // 顺序反了的话那次回调会落在一个还不在表里的记录上
+    this.tunnels.set(id, record)
+    this.attach(record)
+    this.options.onLog?.(`反向隧道已开：集群 127.0.0.1:${boundPort} → 本机 ${localHost}:${localPort}`)
+    return { ...info }
+  }
+
+  /**
+   * 把这条隧道挂到 `record.session` 上。
+   *
+   * 重连之后会再调一次（连接换了，两个订阅都得重挂）。两件事必须成对：
+   * 只重挂 `onReverseConnection` 而忘了 `onClose`，下次断线就再也收不到通知，
+   * 记录会一直显示"开着"。
+   */
+  private attach(record: ReverseRecord): void {
+    const port = record.info.listenPort
+
+    record.unsubscribe = record.session.onReverseConnection((connection) => {
       // Client 上的这个事件是所有反向转发共用的，必须按端口过滤
-      if (connection.destPort !== boundPort) return
+      if (connection.destPort !== port) return
       this.handleConnection(record, connection.accept)
     })
 
-    this.tunnels.set(id, record)
-    this.options.onLog?.(`反向隧道已开：集群 127.0.0.1:${boundPort} → 本机 ${localHost}:${localPort}`)
-    return { ...info }
+    record.unsubscribeSession = record.session.onClose(() => {
+      record.unsubscribeSession = () => {}
+      this.onSessionLost(record)
+    })
+  }
+
+  /**
+   * 底下的连接掉了。
+   *
+   * 这里**不删记录**：删掉的话界面会凭空少一行，用户只会觉得"闪了一下"，
+   * 不知道发生了什么。留一行"已断开 · 正在重连"比消失有信息量。
+   */
+  private onSessionLost(record: ReverseRecord): void {
+    if (record.closed || record.timer) return
+
+    record.info.connected = false
+
+    if (!this.options.getSession) {
+      record.info.lastError = '与集群的连接已断开，这条隧道已经失效'
+      this.options.onLog?.(`反向隧道断开：${record.info.label}`)
+      return
+    }
+
+    record.info.lastError = '与集群的连接已断开，正在重连…'
+    this.options.onLog?.(`反向隧道断开，开始重连：${record.info.label}`)
+    this.scheduleReconnect(record)
+  }
+
+  private scheduleReconnect(record: ReverseRecord): void {
+    if (record.closed) return
+
+    const max = this.options.reconnectMaxAttempts ?? RECONNECT_MAX_ATTEMPTS
+    if (record.attempts >= max) {
+      record.info.lastError = `重连 ${max} 次都没成功，请手动重开（也可能是跳板机换了）`
+      this.options.onLog?.(`反向隧道重连放弃：${record.info.label}`)
+      return
+    }
+
+    record.attempts += 1
+    const base = this.options.reconnectBaseMs ?? RECONNECT_BASE_MS
+
+    /*
+     * 第一次**立刻**试，之后才退避。
+     *
+     * 最常见的断线不是网络没了，而是连接池把它判死然后重连（`pool.run` 遇到
+     * 可重试错误会 `invalidate()`，那条连接上的所有隧道一起没）——这种情况下
+     * 新连接几毫秒后就有了，让用户白等 2 秒毫无意义。
+     * 真断网时第一次也会秒失败，退避从第二次开始照样生效。
+     */
+    const wait = record.attempts === 1 ? 0 : Math.min(base * 2 ** (record.attempts - 2), RECONNECT_MAX_DELAY_MS)
+
+    record.timer = setTimeout(() => {
+      record.timer = null
+      void this.attemptReconnect(record)
+    }, wait)
+  }
+
+  private async attemptReconnect(record: ReverseRecord): Promise<void> {
+    if (record.closed || !this.options.getSession) return
+
+    try {
+      const session = await this.options.getSession(record.info.profileId)
+
+      /*
+       * await 期间用户可能已经把这条关掉了。
+       *
+       * 注意这里**不能 `session.close()`**：`getSession` 给的是连接池里的共享连接，
+       * 关它等于把别人的队列、传输、终端一起断掉。要收手的只有"这条隧道"。
+       */
+      if (record.closed) return
+
+      const bound = await session.forwardIn(record.request.remotePort)
+      if (record.closed) {
+        // 端口已经申请下来了，但这条已经没人要了，还回去就行
+        void session.unforwardIn(bound)
+        return
+      }
+
+      // 换连接：旧订阅在死连接上，取消只是为了不泄漏
+      record.unsubscribe()
+      record.unsubscribeSession()
+      record.session = session
+      record.info.listenPort = bound
+      record.info.connected = true
+      record.info.lastError = null
+      record.attempts = 0
+      this.attach(record)
+
+      this.options.onLog?.(`反向隧道已重连：集群 127.0.0.1:${bound} → 本机 ${record.info.targetHost}:${record.info.targetPort}`)
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err)
+      record.info.lastError = `重连失败（${message}）`
+      this.options.onLog?.(`反向隧道重连失败：${message}`)
+      this.scheduleReconnect(record)
+    }
   }
 
   private handleConnection(record: ReverseRecord, accept: () => ClientChannel): void {
@@ -191,14 +346,28 @@ export class ReverseTunnelManager {
     const record = this.tunnels.get(id)
     if (!record) return false
 
+    // 先置位再拆：正在飞的重连回调看到 closed 就会收手
+    record.closed = true
+    if (record.timer) {
+      clearTimeout(record.timer)
+      record.timer = null
+    }
+
     record.unsubscribe()
+    record.unsubscribeSession()
     for (const socket of record.sockets) socket.destroy()
     for (const channel of record.channels) if (!channel.destroyed) channel.destroy()
     record.sockets.clear()
     record.channels.clear()
 
-    // 释放集群上的端口；不调的话要等整条 SSH 连接断开才回收
-    void record.session.unforwardIn(record.info.listenPort)
+    /*
+     * 释放集群上的端口；不调的话要等整条 SSH 连接断开才回收。
+     *
+     * 连接已经死了就跳过——`unforwardIn` 会往一条没有的通道上写包，
+     * 抛出来的错误既没人接也没意义。用 `!== false` 是因为假 Session（单测）
+     * 上没有这个 getter，当"活着"处理才能验到释放这一步。
+     */
+    if (record.session.isAlive !== false) void record.session.unforwardIn(record.info.listenPort)
 
     this.tunnels.delete(id)
     this.options.onLog?.(`反向隧道已关：${record.info.label}`)

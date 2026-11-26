@@ -64,6 +64,16 @@ export interface TunnelInfo {
   /** 最近一次连接失败的原因（常见：目标端口没人监听） */
   lastError: string | null
   /**
+   * 底下的 SSH 连接还在不在。
+   *
+   * 反向隧道挂在一条长连接上，连接掉了（网络抖、跳板机重启、NAT 超时）
+   * 集群侧那个监听端口会立刻消失，但记录如果还留着，界面就会显示"开着"
+   * 而用户 `curl` 得到 `Connection refused`——两边说的是同一件事，看着却像矛盾。
+   *
+   * 断开之后会尝试自动重连；重连期间仍是 false，`lastError` 里写原因。
+   */
+  connected: boolean
+  /**
    * 这条隧道建在哪台跳板机上。
    *
    * 没有这两个字段时，列表里两条 `集群 127.0.0.1:21056` 长得一模一样，
@@ -137,6 +147,8 @@ export class TunnelManager {
       bytesIn: 0,
       bytesOut: 0,
       lastError: null,
+      // 本机监听的隧道由 TunnelManager 自己持有 server，没有"底下的连接"这回事
+      connected: true,
       profileId: request.profileId,
       profileLabel: request.profileLabel
     }

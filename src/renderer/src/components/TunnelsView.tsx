@@ -683,6 +683,12 @@ export function TunnelsView(): JSX.Element {
 
           {tunnels.map((tunnel) => {
             const isReverse = tunnel.direction === 'reverse'
+            /*
+             * 写成 `=== false` 而不是 `!tunnel.connected`：
+             * 旧 preload 传来的对象没有这个字段，`!undefined` 会让每一条都显示"已断开"。
+             * 拿不到就按"连着"处理，宁可少报一次状态，也不要集体误报。
+             */
+            const down = tunnel.connected === false
             const preset = isReverse ? undefined : PRESETS.find((item) => item.port === tunnel.targetPort)
             const openable = !isReverse && (preset?.protocol ?? 'http') === 'http' && tunnel.url !== null
 
@@ -714,6 +720,14 @@ export function TunnelsView(): JSX.Element {
                       title={`建在跳板机 ${tunnel.profileLabel} 上`}
                     >
                       在 {tunnel.profileLabel}
+                    </span>
+                  )}
+                  {down && (
+                    <span
+                      className="rounded-full border border-state-wait/30 bg-state-wait/[0.06] px-2 py-0.5 text-meta text-state-wait"
+                      title="底下的 SSH 连接断了，集群侧那个监听端口已经没了"
+                    >
+                      连接已断
                     </span>
                   )}
                   <span className="font-mono text-sub text-ink-500">
@@ -770,7 +784,8 @@ export function TunnelsView(): JSX.Element {
                     <button
                       type="button"
                       onClick={() => void verify(tunnel)}
-                      disabled={verifying === tunnel.id}
+                      disabled={verifying === tunnel.id || down}
+                      title={down ? '连接断了，先等它重连上再测' : undefined}
                       className="rounded border border-ink-200 bg-surface px-2 py-0.5 text-sub text-ink-700 transition hover:bg-ink-50 disabled:text-ink-300"
                     >
                       {verifying === tunnel.id ? '测试中…' : '测一下能不能用'}
@@ -808,7 +823,13 @@ export function TunnelsView(): JSX.Element {
                 )}
 
                 {tunnel.lastError && (
-                  <p className="mt-1 text-meta text-state-bad">最近一次连接失败：{tunnel.lastError}</p>
+                  <p
+                    className={`mt-1 text-meta ${down ? 'text-state-wait' : 'text-state-bad'}`}
+                  >
+                    {/* 断开后的 lastError 本身就是一句话（"正在重连…"/"重连 5 次都没成功…"），
+                        再套一层"最近一次连接失败："会读成两句话打结 */}
+                    {down ? tunnel.lastError : `最近一次连接失败：${tunnel.lastError}`}
+                  </p>
                 )}
                 {tunnel.connections === 0 && !tunnel.lastError && (
                   <p className="mt-1 text-meta leading-relaxed text-ink-500">

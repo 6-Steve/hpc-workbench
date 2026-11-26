@@ -492,6 +492,8 @@ interface TunnelInfo {
   bytesIn: number
   bytesOut: number
   lastError: string | null
+  /** 底下的 SSH 连接还在不在。false = 集群侧监听端口已经没了，正在自动重连 */
+  connected: boolean
   /** 这条隧道建在哪台跳板机上（两台登录节点会各有一条同名端口，靠它区分） */
   profileId?: string
   profileLabel?: string

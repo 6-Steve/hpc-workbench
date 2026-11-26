@@ -400,7 +400,19 @@ if (!gotLock) {
     tunnels = new TunnelManager({ onLog: (message) => isDev && console.log(`[tunnel] ${message}`) })
 
     reverseTunnels = new ReverseTunnelManager({
-      onLog: (message) => isDev && console.log(`[reverse] ${message}`)
+      onLog: (message) => isDev && console.log(`[reverse] ${message}`),
+      /*
+       * 反向隧道挂在一条长连接上：连接一断，集群侧那个监听端口立刻就没了。
+       * 而隧道是个"开一次就一直挂着"的东西，用户不会盯着界面看——
+       * 所以断线后由它自己捞一条新连接重开，不能等人来点。
+       */
+      getSession: async (profileId) => {
+        const current = profileState.current()
+        if (profileId && profileId !== current.id) {
+          throw new Error(`当前跳板机已切到「${current.label}」，这条隧道不会自动重连`)
+        }
+        return connection.acquire(current)
+      }
     })
 
     // 终端：输出直接推给所有窗口（和传输进度同一个模式）

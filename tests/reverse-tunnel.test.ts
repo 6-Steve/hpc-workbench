@@ -40,19 +40,41 @@ interface FakeSession {
   unforwarded: number[]
   unsubscribed: () => boolean
   failNextForward: boolean
+  /** 模拟"底下的连接掉了"：isAlive 变 false，并通知 onClose 的订阅者 */
+  drop: () => void
+  /** 这条假连接是不是已经被关掉了 */
+  alive: () => boolean
 }
 
 function fakeSession(): FakeSession {
   let listener: ((connection: ReverseConnection) => void) | null = null
   const forwarded: number[] = []
   const unforwarded: number[] = []
+  const closeListeners = new Set<() => void>()
+  let alive = true
 
   const state: FakeSession = {
     forwarded,
     unforwarded,
     failNextForward: false,
+    alive: () => alive,
+    drop: () => {
+      alive = false
+      for (const notify of [...closeListeners]) notify()
+      closeListeners.clear()
+    },
     unsubscribed: () => listener === null,
     session: {
+      get isAlive(): boolean {
+        return alive
+      },
+      async close(): Promise<void> {
+        state.drop()
+      },
+      onClose(notify: () => void): () => void {
+        closeListeners.add(notify)
+        return () => closeListeners.delete(notify)
+      },
       async forwardIn(port: number): Promise<number> {
         if (state.failNextForward) throw new Error('administratively prohibited')
         forwarded.push(port)
@@ -92,8 +114,8 @@ function fakeSession(): FakeSession {
 const managers: ReverseTunnelManager[] = []
 const servers: Server[] = []
 
-function newManager(): ReverseTunnelManager {
-  const manager = new ReverseTunnelManager()
+function newManager(options?: ConstructorParameters<typeof ReverseTunnelManager>[0]): ReverseTunnelManager {
+  const manager = new ReverseTunnelManager(options)
   managers.push(manager)
   return manager
 }
@@ -216,6 +238,125 @@ describe('ReverseTunnelManager', () => {
     manager.closeAll()
 
     expect(fake.unforwarded.sort()).toEqual([55555, 55556])
+    expect(manager.list()).toHaveLength(0)
+  })
+})
+
+/* ────────────────────────────────────────────────────────────────────────
+ * 断线。
+ *
+ * 反向隧道挂在一条长连接上，这条链路（本机 → 代理 → 跳板机）断是常态。
+ * 原来有两个问题叠在一起：
+ *   1. 连接断了，记录还留在列表里 —— 界面说"开着"，用户 curl 得到
+ *      `Connection refused`，两边说的是同一件事，看着却像自相矛盾；
+ *   2. 断了之后没有任何恢复动作，用户得自己发现、自己重开。
+ * 下面这几条锁住"断了要说实话"和"断了会自己捞回来"。
+ * ──────────────────────────────────────────────────────────────────────── */
+
+const FAST = { reconnectBaseMs: 10, reconnectMaxAttempts: 3 }
+
+describe('ReverseTunnelManager · 断线', () => {
+  it('连接掉了：记录不删，但标成未连接并说明在重连', async () => {
+    const fake = fakeSession()
+    const manager = newManager({ ...FAST, getSession: async () => fakeSession().session })
+    await manager.open(fake.session, { remotePort: 21056, localPort: 7897 })
+
+    fake.drop()
+
+    // 记录还在——凭空少一行比"显示已断开"更让人迷惑
+    expect(manager.list()).toHaveLength(1)
+    const info = manager.list()[0]!
+    expect(info.connected).toBe(false)
+    expect(info.lastError).toContain('正在重连')
+  })
+
+  it('没有 getSession 时明确说"已失效"，不去假装还能重连', async () => {
+    const fake = fakeSession()
+    const manager = newManager()
+    await manager.open(fake.session, { remotePort: 21056, localPort: 7897 })
+
+    fake.drop()
+
+    const info = manager.list()[0]!
+    expect(info.connected).toBe(false)
+    expect(info.lastError).toContain('已经失效')
+  })
+
+  it('自动重连：在新连接上重新申请同一个端口，状态回到已连接', async () => {
+    const first = fakeSession()
+    const second = fakeSession()
+    const manager = newManager({ ...FAST, getSession: async () => second.session })
+
+    await manager.open(first.session, { remotePort: 21056, localPort: 7897 })
+    first.drop()
+
+    await waitFor(() => second.forwarded.length === 1)
+
+    const info = manager.list()[0]!
+    expect(second.forwarded).toEqual([21056])
+    expect(info.connected).toBe(true)
+    expect(info.lastError).toBeNull()
+    expect(info.listenPort).toBe(21056)
+  })
+
+  it('重连后转发仍然通（换的是连接，不是隧道）', async () => {
+    const first = fakeSession()
+    const second = fakeSession()
+    const manager = newManager({ ...FAST, getSession: async () => second.session })
+    const echo = await startEchoServer()
+    servers.push(echo.server)
+
+    await manager.open(first.session, { remotePort: 21056, localPort: echo.port })
+    first.drop()
+    await waitFor(() => second.forwarded.length === 1)
+
+    // 重连之后，集群那边进来一个连接，仍然要接到本机端口上
+    const conn = second.incoming(21056)
+    conn.feed('ping')
+    await waitFor(() => conn.received.join('') === 'ping')
+    expect(manager.list()[0]!.connections).toBe(1)
+  })
+
+  it('重连失败会一直试到上限，然后老实说"重连 N 次都没成功"', async () => {
+    const first = fakeSession()
+    let attempts = 0
+    const manager = newManager({
+      ...FAST,
+      getSession: async () => {
+        attempts += 1
+        throw new Error('network unreachable')
+      }
+    })
+
+    await manager.open(first.session, { remotePort: 21056, localPort: 7897 })
+    first.drop()
+
+    await waitFor(() => (manager.list()[0]?.lastError ?? '').includes('都没成功'), 4000)
+
+    expect(attempts).toBe(3)
+    const info = manager.list()[0]!
+    expect(info.connected).toBe(false)
+    expect(info.lastError).toContain('请手动重开')
+  })
+
+  it('用户主动关掉之后不再重连（定时器要清干净）', async () => {
+    const fake = fakeSession()
+    let attempts = 0
+    const manager = newManager({
+      ...FAST,
+      getSession: async () => {
+        attempts += 1
+        throw new Error('should not happen')
+      }
+    })
+
+    const info = await manager.open(fake.session, { remotePort: 21056, localPort: 7897 })
+    fake.drop()
+    manager.close(info.id)
+
+    await sleep(120)
+
+    expect(attempts).toBe(0)
     expect(manager.list()).toHaveLength(0)
   })
 })
