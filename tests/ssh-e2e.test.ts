@@ -172,6 +172,16 @@ describe('Session 端到端', () => {
     await expect(extra.exec('echo hello')).rejects.toBeInstanceOf(SshError)
   })
 
+  it('自己关掉的连接，关闭原因说"本地"，不能赖到服务端头上', async () => {
+    const extra = await Session.open(profile, { knownHosts: new KnownHostsStore(null) })
+    // 活着的时候没有"关闭原因"
+    expect(extra.closeReason).toBeNull()
+
+    await extra.close()
+
+    expect(extra.closeReason).toContain('本地主动关闭')
+  })
+
   it('主机指纹变了就拒绝连接', async () => {
     const tampered = new KnownHostsStore(null)
     tampered.remember('127.0.0.1', port, 'ssh-ed25519', 'SHA256:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')

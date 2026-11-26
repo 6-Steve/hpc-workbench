@@ -199,14 +199,23 @@ export class ReverseTunnelManager {
 
     record.info.connected = false
 
+    /*
+     * 把连接自己给的原因带出去。
+     *
+     * 拿不到 code/signal——ssh2 的连接层就没有这东西（`{code, signal}` 是通道的）。
+     * 但"服务端主动断开了连接"和"心跳超时"这两句已经足够区分
+     * "跳板机在清理空闲连接"和"你这边网络断了"，比一句干巴巴的"已断开"有用得多。
+     */
+    const why = record.session.closeReason ?? '与集群的连接已断开'
+
     if (!this.options.getSession) {
-      record.info.lastError = '与集群的连接已断开，这条隧道已经失效'
-      this.options.onLog?.(`反向隧道断开：${record.info.label}`)
+      record.info.lastError = `${why}，这条隧道已经失效`
+      this.options.onLog?.(`反向隧道断开：${record.info.label}（${why}）`)
       return
     }
 
-    record.info.lastError = '与集群的连接已断开，正在重连…'
-    this.options.onLog?.(`反向隧道断开，开始重连：${record.info.label}`)
+    record.info.lastError = `${why}，正在重连…`
+    this.options.onLog?.(`反向隧道断开，开始重连：${record.info.label}（${why}）`)
     this.scheduleReconnect(record)
   }
 

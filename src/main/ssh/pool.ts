@@ -66,7 +66,11 @@ export class ConnectionPool {
         // 只有"连接自己掉了"才值得说一声；我们主动 close / invalidate 时表里已经没有它了
         const unexpected = current?.session === session
         if (unexpected) this.entries.delete(profile.id)
-        if (unexpected && !this.disposed) this.options.onLog?.(`与 ${profile.host} 的连接已关闭`)
+        if (unexpected && !this.disposed) {
+          // 带上连接自己给的原因：只说"已关闭"的话，"网断了"和"服务端踢了"分不出来
+          const why = session.closeReason
+          this.options.onLog?.(`与 ${profile.host} 的连接已关闭${why ? `：${why}` : ''}`)
+        }
       })
       return session
     } finally {

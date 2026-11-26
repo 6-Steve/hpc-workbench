@@ -176,6 +176,18 @@ export class Session {
   private status: SessionStatus
   private hostKeyInfo: HostKeyInfo | undefined
   private lastError: SshError | undefined
+  /**
+   * 连接是怎么断的，一句话。`null` = 还没断。
+   *
+   * 为什么要单独记：`lastError` 只在 `error` 事件里被赋值，而"对端发了断开请求"
+   * 和"我们自己关的"走的都不是 error 分支——那两种情况下什么都不记，
+   * 事后只能看到一句"连接已断开"，等于没信息。
+   */
+  private closedReason: string | null = null
+  /** 收到过 ssh2 的 `end` = 对端发了 SSH_MSG_DISCONNECT */
+  private sawRemoteEnd = false
+  /** 是我们自己调的 `close()` */
+  private closingByUs = false
   private sftpClient: SFTPWrapper | undefined
   private sftpPending: Promise<SFTPWrapper> | undefined
   /** 旁观钩子，见 SessionOptions.onTrace */
@@ -267,6 +279,8 @@ export class Session {
       client.on('error', (err: Error) => {
         const normalized = hostKeyProblem ? hostKeyError(hostKeyProblem, profile) : normalizeSshError(err, ctx)
         session.lastError = normalized
+        // error 里的措辞最具体（"心跳超时"/"ECONNRESET"），优先用它当关闭原因
+        session.closedReason = normalized.message
         session.markClosed()
         settle(normalized)
       })
@@ -274,7 +288,11 @@ export class Session {
         session.status = 'ready'
         settle()
       })
-      client.on('close', () => session.markClosed())
+      // 对端发 SSH_MSG_DISCONNECT 时 ssh2 先发 'end' 再发 'close'
+      client.on('end', () => {
+        session.sawRemoteEnd = true
+      })
+      client.on('close', () => session.noteClientClosed())
 
       try {
         client.connect(config)
@@ -298,6 +316,16 @@ export class Session {
     return this.lastError
   }
 
+  /**
+   * 连接关闭的原因，一句话。`null` = 还活着。
+   *
+   * 给"事后解释"用的：反向隧道断了要写进界面、连接池断了要写进日志，
+   * 之前这些地方只能干巴巴说一句"连接已断开"。
+   */
+  get closeReason(): string | null {
+    return this.status === 'closed' ? this.closedReason : null
+  }
+
   onClose(listener: () => void): () => void {
     if (this.status === 'closed') {
       listener()
@@ -307,6 +335,14 @@ export class Session {
     return () => {
       this.closeListeners.delete(listener)
     }
+  }
+
+  private noteClientClosed(): void {
+    // `error` 已经写过更具体的原因时不再覆盖
+    if (!this.closedReason) {
+      this.closedReason = describeClose({ byUs: this.closingByUs, remoteEnded: this.sawRemoteEnd })
+    }
+    this.markClosed()
   }
 
   private markClosed(): void {
@@ -1182,9 +1218,12 @@ export class Session {
   async close(): Promise<void> {
     if (this.status === 'closed') return
     const client = this.client
+    // 先记账再断：`close` 事件里要靠它区分"我们关的"和"对面关的"
+    this.closingByUs = true
 
     if (this.status !== 'ready') {
       client.destroy()
+      this.closedReason ??= '本地主动关闭（连接尚未就绪）'
       this.markClosed()
       return
     }
@@ -1200,8 +1239,31 @@ export class Session {
       })
       client.end()
     })
+    // 正常情况下 'close' 事件已经写过原因了；这里兜的是"超时后 destroy"那条路
+    this.closedReason ??= '本地主动关闭'
     this.markClosed()
   }
+}
+
+/**
+ * 一句话说清"连接是怎么断的"。
+ *
+ * ## 为什么这里没有 exit code / signal，也没有 hadError
+ *
+ * `{ code, signal }` 是**通道**（exec / shell）的概念——`SessionOptions.onClose`
+ * 里那一对就是通道的，`exit` 之后才有。连接（`Client`）本身没有：
+ *
+ * - ssh2 运行时的 `close` 会带一个 `hadError`，但 `@types/ssh2` 把它声明成
+ *   `on('close', () => void)`，想拿它只能强转类型；
+ * - 而且它本来就不带信息——真有错的话 `error` 事件**先**发生，那边有
+ *   "心跳超时 / ECONNRESET / ENOTFOUND" 这种原话。
+ *
+ * 所以这里只回答"谁先动的"。想拿数字是拿不到的，硬编一个只会误导。
+ */
+export function describeClose(input: { byUs: boolean; remoteEnded: boolean }): string {
+  if (input.byUs) return '本地主动关闭'
+  if (input.remoteEnded) return '服务端主动断开了连接'
+  return '连接被关闭（没拿到具体原因）'
 }
 
 function trimForDisplay(command: string, max = 120): string {

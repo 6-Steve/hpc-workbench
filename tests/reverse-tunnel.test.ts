@@ -41,7 +41,7 @@ interface FakeSession {
   unsubscribed: () => boolean
   failNextForward: boolean
   /** 模拟"底下的连接掉了"：isAlive 变 false，并通知 onClose 的订阅者 */
-  drop: () => void
+  drop: (reason?: string) => void
   /** 这条假连接是不是已经被关掉了 */
   alive: () => boolean
 }
@@ -52,14 +52,16 @@ function fakeSession(): FakeSession {
   const unforwarded: number[] = []
   const closeListeners = new Set<() => void>()
   let alive = true
+  let closedReason: string | null = null
 
   const state: FakeSession = {
     forwarded,
     unforwarded,
     failNextForward: false,
     alive: () => alive,
-    drop: () => {
+    drop: (reason?: string) => {
       alive = false
+      closedReason = reason ?? '服务端主动断开了连接'
       for (const notify of [...closeListeners]) notify()
       closeListeners.clear()
     },
@@ -67,6 +69,9 @@ function fakeSession(): FakeSession {
     session: {
       get isAlive(): boolean {
         return alive
+      },
+      get closeReason(): string | null {
+        return alive ? null : closedReason
       },
       async close(): Promise<void> {
         state.drop()
@@ -267,6 +272,18 @@ describe('ReverseTunnelManager · 断线', () => {
     expect(manager.list()).toHaveLength(1)
     const info = manager.list()[0]!
     expect(info.connected).toBe(false)
+    expect(info.lastError).toContain('正在重连')
+  })
+
+  it('把连接自己给的原因带进文案（区分"服务端踢了"和"网断了"）', async () => {
+    const fake = fakeSession()
+    const manager = newManager({ ...FAST, getSession: async () => fakeSession().session })
+    await manager.open(fake.session, { remotePort: 21056, localPort: 7897 })
+
+    fake.drop('与 hpc 的连接被服务端断开（心跳超时）')
+
+    const info = manager.list()[0]!
+    expect(info.lastError).toContain('心跳超时')
     expect(info.lastError).toContain('正在重连')
   })
 
